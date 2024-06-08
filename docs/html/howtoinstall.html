@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. インストールに必要なもの &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="3. 計算プログラムの実行方法" href="howtocalc.html" />
+    <link rel="prev" title="Welcome to afdet solver&#39;s user guide!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. インストールに必要なもの</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pc">1.1. PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">1.2. コンパイラ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">1.3. ビルドツール</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1. </span>インストールに必要なもの</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/howtoinstall.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">1. </span>インストールに必要なもの<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="pc">
+<h2><span class="section-number">1.1. </span>PC<a class="headerlink" href="#pc" title="Link to this heading"></a></h2>
+<p>言わずもがな. ラップトップでは厳しい. デスクトップマシン推奨.
+OSについては, 基本的にはUNIX系を使用する. 以下の環境での動作が確認されている.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>OS</p></th>
+<th class="head"><p>version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ubuntu</p></td>
+<td><p>20.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>CentOS</p></td>
+<td><p>7.0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id2">
+<h2><span class="section-number">1.2. </span>コンパイラ<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>あらかじめ Fortranコンパイラを用意する必要がある.</p>
+<p>デフォルトは <code class="docutils literal notranslate"><span class="pre">intel</span> <span class="pre">fortran</span></code> である.</p>
+<p>後述の <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> を書き換えれば変更は可能.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>コンパイラの変更は可能だが, ソルバ内のサブルーチンの幾つかが <code class="docutils literal notranslate"><span class="pre">intel</span> <span class="pre">Fortran</span></code> に依存しているため,
+他のコンパイラを使いたい場合はそのあたりの修正を念頭に置くこと.</p>
+</div>
+</section>
+<section id="id3">
+<h2><span class="section-number">1.3. </span>ビルドツール<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>本ソルバはコンパイルに <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> を使用する.</p>
+</section>
+</section>
+<section id="id4">
+<span id="id5"></span><h1><span class="section-number">2. </span>インストール手順<a class="headerlink" href="#id4" title="Link to this heading"></a></h1>
+<p>ソルバ一式を入手する. 入手方法は, 今のところ開発者に連絡してzipファイルを貰うしかない.</p>
+<p>適当な場所に入手したファイルを解凍する. ディレクトリ構成は以下の通りとなっている.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>afdet_solver-###(###はバージョン番号.)/
+    ├ DOC(ver1.0.8以前. それ以降含まれず)/
+    ├ sample/
+    |   ├ case_poiseuille/
+    |   └ project_piston
+    └ solver_project/
+        ├ lib/
+        |   ├ common/
+        |   ├ common2/
+        |   ├ mod/
+        |   ├ obj/
+        |   └ Makefile
+        ├ obj/
+        ├ bin/
+        ├ src/
+        └ Makefile
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">solver_project</span></code> ディレクトリに移動し, 以下のコマンドをたたく.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ make
+</pre></div>
+</div>
+<p>このコマンドにより, <code class="docutils literal notranslate"><span class="pre">/solver_project/lib/common,</span> <span class="pre">common2</span></code> 内のライブラリ, および <code class="docutils literal notranslate"><span class="pre">solver_project/src</span></code> 内の
+メインプログラムのビルドを開始する.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><code class="docutils literal notranslate"><span class="pre">make:</span>&#160; <span class="pre">'all'</span> <span class="pre">に対して行うべき事はありません</span></code> とでた場合, 既にビルド済みである可能性が高い.
+しかし他のPC環境でビルドしたバイナリは使えないことが多いので, <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> として生成物を全て消去する(ソースファイルは消えないので大丈夫.)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>当然だが ビルドツール <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> が必要.</p>
+</div>
+<figure class="align-default" id="id6">
+<img alt="_images/install_process1.png" src="_images/install_process1.png" />
+<figcaption>
+<p><span class="caption-number">図 2.1 </span><span class="caption-text">コマンドを実行するディレクトリと,端末画面の例</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>ビルドが終了すれば,以下のような画面が出てくる(ただしバージョンによって細部は異なる.)</p>
+<figure class="align-default" id="id7">
+<img alt="_images/install_process2.png" src="_images/install_process2.png" />
+<figcaption>
+<p><span class="caption-number">図 2.2 </span><span class="caption-text">make終了時の画面例</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>もしビルドが途中で止まる場合は開発者に連絡してください.</p>
+</div>
+<p>ビルドが正常に終了した後, 以下のコマンドによりシステムへのインストールを開始する.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ sudo make install
+</pre></div>
+</div>
+<p>インストール先は <code class="docutils literal notranslate"><span class="pre">/usr/local/lib</span></code> と <code class="docutils literal notranslate"><span class="pre">/usr/local/bin</span></code> である.
+成功すると以下のような画面が表示される.</p>
+<figure class="align-default" id="id8">
+<img alt="_images/install_process3.png" src="_images/install_process3.png" />
+<figcaption>
+<p><span class="caption-number">図 2.3 </span><span class="caption-text">success と表示されればインストール完了.</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>正常にインストール出来ているか確認するために, ソルバのコマンドを実行する(非圧縮性ソルバの場合).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ afdetFractional
+</pre></div>
+</div>
+<p>上手くいけば</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ afdetFractional
+  KIT Flow solver afdetFractional ver.1.0.8
+
+Usage:
+  afdetFractional &lt;case directory&gt;
+</pre></div>
+</div>
+<p>と表示されるはず.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to afdet solver&#39;s user guide!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="howtocalc.html" class="btn btn-neutral float-right" title="3. 計算プログラムの実行方法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

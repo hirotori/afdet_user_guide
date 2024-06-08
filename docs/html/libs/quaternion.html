@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. クォータ二オン &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="2. 剛体の運動(弱連成)" href="rigidbody.html" />
+    <link rel="prev" title="5. 非圧縮流体の計算" href="../main/incomp_simulator.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. クォータ二オン</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">1.1. 定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">1.2. 基本的な演算</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">1.2.1. 和</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">1.2.2. ハミルトン積</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">1.2.3. 共役</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">1.2.4. ノルム</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">1.2.5. 逆クォータニオン</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">1.3. ベクトルの回転</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">1.3.1. 回転の行列表現</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">1.3.2. 回転の合成</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#slerp">1.4. 球面補間(Slerp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">1.5. 参考</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1. </span>クォータ二オン</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/libs/quaternion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">1. </span>クォータ二オン<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>クォータ二オンを直接触ることは無いだろうが, <code class="docutils literal notranslate"><span class="pre">Rigidbody_t</span></code> を
+扱う上で必要なのでここで整理する.</p>
+<section id="id2">
+<h2><span class="section-number">1.1. </span>定義<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>クォータ二オンは複素数を拡張した数の体系で, 虚数単位 <span class="math notranslate nohighlight">\(i,j,k\)</span> を持ちいて</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q} = a + bi + cj + dk \quad (a,b,c,d \in \mathbb{R})\]</div>
+<p>と表される数である. <span class="math notranslate nohighlight">\(i,j,k\)</span> はクォータ二オンが定義される空間の基底であり,</p>
+<div class="math notranslate nohighlight">
+\[i^{2} = j^{2} = k^{2} = ijk = -1\]</div>
+<p>を満たす. また, これを用いれば相異なる基底間の積を定義出来る.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}ij &amp;= -ji = k \\
+jk &amp;= -kj = i \\
+ki &amp;= -ik = j \\\end{split}\]</div>
+<p>クォータ二オンの <span class="math notranslate nohighlight">\(a\)</span> をスカラー部, <span class="math notranslate nohighlight">\(bi + cj + dk\)</span> をベクトル部という. <span class="math notranslate nohighlight">\(i,j,k\)</span> を
+改めて <span class="math notranslate nohighlight">\(\mathbb{R}^{3}\)</span> の基底だと思うと, ベクトル部は実ベクトル空間の元 <span class="math notranslate nohighlight">\(\boldsymbol{v}\)</span> である. この観点から
+クォータ二オンを</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q} = a + \boldsymbol{v}\]</div>
+<p>と書くことにする. 例えば実ベクトル空間のベクトルは <span class="math notranslate nohighlight">\(a=0\)</span> のクォータ二オンである.</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">1.2. </span>基本的な演算<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>相異なる2つのクォータ二オン</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\tilde{q} &amp;= q_{0} + q_{1}i + q_{2}j + q_{3}k = q_{0} + \boldsymbol{q} \\
+\tilde{p} &amp;= p_{0} + p_{1}i + p_{2}j + p_{3}k = p_{0} + \boldsymbol{p}  \\\end{split}\]</div>
+<p>の演算について述べる.</p>
+<section id="id4">
+<h3><span class="section-number">1.2.1. </span>和<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>和については成分毎の演算である.</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q} + \tilde{p} = q_{0} + p_{0} + \boldsymbol{q} + \boldsymbol{p}\]</div>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.2.2. </span>ハミルトン積<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>積については分配律から計算する. 分配法則によって展開すると</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q}\tilde{p} = q_{0}p_{0} + q_{0}\boldsymbol{p} + p_{0}\boldsymbol{q} + \boldsymbol{q}\boldsymbol{p}\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\boldsymbol{q}\boldsymbol{p}\)</span> は基底間の積のルールにしたがって計算する.
+計算過程は省略するが, 実ベクトル空間に対する演算子である内積と外積を用いて次のように書ける.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{q}\boldsymbol{p} = -(\boldsymbol{q}\cdot\boldsymbol{p}) + \boldsymbol{q}\times\boldsymbol{p}\]</div>
+<p>クォータニオンの積は非可換であることに注意する.</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">1.2.3. </span>共役<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p><span class="math notranslate nohighlight">\(\tilde{q}\)</span> の共役とはベクトル部を異符号にしたものであり</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q}^{\ast} = q_{0} - \boldsymbol{q}\]</div>
+<p>で表される. 2つのクォータニオンの積の共役は次式となる.</p>
+<div class="math notranslate nohighlight">
+\[(\tilde{q}\tilde{p})^{\ast} = \tilde{p}^{\ast}\tilde{q}^{\ast}\]</div>
+</section>
+<section id="id7">
+<h3><span class="section-number">1.2.4. </span>ノルム<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>クォータニオンのノルムは共役クォータニオンを用いて定義することも出来る.</p>
+<div class="math notranslate nohighlight">
+\[\left\| \tilde{q} \right\| = \sqrt{q_{0}^{2}+q_{1}^{2}+q_{2}^{2}+q_{3}^{2}}
+ = \sqrt{\tilde{q}\tilde{q}^{\ast}} = \sqrt{\tilde{q}^{\ast}\tilde{q}}\]</div>
+</section>
+<section id="id8">
+<h3><span class="section-number">1.2.5. </span>逆クォータニオン<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>共役を用いて逆クォータニオンを定義出来る.</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q}^{-1} = \frac{\tilde{q}^{\ast}}{\left\| \tilde{q} \right\|}\]</div>
+<p>実際, <span class="math notranslate nohighlight">\(\tilde{q}\tilde{q}^{-1} = \tilde{q}^{-1}\tilde{q} = 1\)</span> であることがわかる.</p>
+</section>
+</section>
+<section id="id9">
+<h2><span class="section-number">1.3. </span>ベクトルの回転<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<p>回転角 <span class="math notranslate nohighlight">\(\theta\)</span> とし, ノルムが1となるようなものとして</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q} = \cos \frac{\theta}{2} + \boldsymbol{n}\sin \frac{\theta}{2}\]</div>
+<p>を定義し, これを回転クオータニオンと呼ぶ. ただし <span class="math notranslate nohighlight">\(\boldsymbol{n}\)</span> は回転軸を向く単位ベクトルである.</p>
+<p>このような <span class="math notranslate nohighlight">\(\tilde{q}\)</span> を用いると, 実ベクトル <span class="math notranslate nohighlight">\(\boldsymbol{r}\)</span> の回転後のベクトル <span class="math notranslate nohighlight">\(\boldsymbol{r}'\)</span> は次式で表される.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r}' = \tilde{q}\boldsymbol{r}\tilde{q}^{\ast}\]</div>
+<p>まず一般の <span class="math notranslate nohighlight">\(\tilde{q}\)</span> について計算すると次式となる.</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q}\boldsymbol{r}\tilde{q}^{\ast}
+=
+[q_{0}^{2}-(\boldsymbol{q}\cdot\boldsymbol{q})]\boldsymbol{r}
++ 2q_{0}(\boldsymbol{q}\times\boldsymbol{r})
++ 2(\boldsymbol{q}\cdot\boldsymbol{r})\boldsymbol{q}\]</div>
+<p>したがって回転クオータニオンの場合は</p>
+<div class="math notranslate nohighlight">
+\[\tilde{q}\boldsymbol{r}\tilde{q}^{\ast}
+=
+(\boldsymbol{n}\cdot\boldsymbol{r})\boldsymbol{n}
++ [\boldsymbol{r} - (\boldsymbol{n}\cdot\boldsymbol{r})\boldsymbol{n}]\cos\theta
++ \boldsymbol{n}\times\boldsymbol{r}\sin\theta\]</div>
+<p>で表される. 幾何学的なイメージは2番目の文献を参照のこと.</p>
+<section id="id10">
+<h3><span class="section-number">1.3.1. </span>回転の行列表現<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>ベクトルの回転を行列で表す. すなわち,</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r}'
+= \tilde{q}\boldsymbol{r}\tilde{q}^{\ast}
+= {\bf A} \boldsymbol{r}\]</div>
+<p>を満たすような <span class="math notranslate nohighlight">\({\bf A}\)</span> を求める. 計算過程は省略するが, 次のようになる.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\bf A}
+=
+\begin{bmatrix}
+q_{0}^{2}+q_{1}^{2}-q_{2}^{2}-q_{3}^{2} &amp; 2(q_{1}q_2-q_0q_3) &amp; 2(q_2q_0+q_1q_3) \\
+2(q_{1}q_2+q_0q_3) &amp; q_{0}^{2}-q_{1}^{2}+q_{2}^{2}-q_{3}^{2} &amp; 2(q_2q_3-q_1q_0) \\
+2(q_1q_3-q_2q_0) &amp; 2(q_2q_3+q_1q_0) &amp; q_{0}^{2}-q_{1}^{2}-q_{2}^{2}+q_{3}^{2}
+\end{bmatrix}\end{split}\]</div>
+<p><span class="math notranslate nohighlight">\(\tilde{q}\)</span> が回転クォータニオンの場合, 対角成分は次のようになる.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A_{11} &amp;= 2q_0^2 + 2q_1^2 - 1 = 1 - 2q_2^2 - 2q_3^2 \\
+A_{22} &amp;= 2q_0^2 + 2q_2^2 - 1 = 1 - 2q_3^2 - 2q_1^2 \\
+A_{33} &amp;= 2q_0^2 + 2q_3^2 - 1 = 1 - 2q_1^2 - 2q_2^2 \\\end{split}\]</div>
+<p>例えば <span class="math notranslate nohighlight">\(A_{11}\)</span> については,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}A_{11} &amp;= q_{0}^{2}+q_{1}^{2}-q_{2}^{2}-q_{3}^{2} \\
+&amp;= \cos^2\frac{\theta}{2} + \sin^2\frac{\theta}{2}(n_x^2-n_y^2-n_z^2) \\
+&amp;= \cos^2\frac{\theta}{2} - \sin^2\frac{\theta}{2}(n_x^2+n_y^2+n_z^2) + 2\sin^2\frac{\theta}{2}n_x^2 \\
+&amp;= 2\cos^2\frac{\theta}{2}+ 2\sin^2\frac{\theta}{2}n_x^2 -1 \\
+&amp;= 2q_0^2 + 2q_1^2 - 1 \\
+&amp;= 2q_0^2 + 2(1-q_0^2-q_2^2-q_3^2) - 1 \\
+&amp;= 1 - 2q_2^2 - q_3^2\end{split}\]</div>
+<p>として示される. 他の成分も同様である.</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">1.3.2. </span>回転の合成<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>初期座標を <span class="math notranslate nohighlight">\(\boldsymbol{r}_{0}\)</span> とおく. 1回目の回転を, 回転クォータニオン
+<span class="math notranslate nohighlight">\(\tilde{q_{1}}\)</span> で, 2回目を <span class="math notranslate nohighlight">\(\tilde{q_{2}}\)</span> で表すと, 2回回転したあとのベクトル <span class="math notranslate nohighlight">\(\boldsymbol{r}_{2}\)</span> は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{r}_1 &amp;= \tilde{q_{1}}\boldsymbol{r}_0\tilde{q_{1}}^{\ast} \\
+\boldsymbol{r}_2 &amp;= \tilde{q_{2}}\boldsymbol{r}_1\tilde{q_{2}}^{\ast}
+ = (\tilde{q_{2}}\tilde{q_{1}})\boldsymbol{r}_0(\tilde{q_{2}}\tilde{q_{1}})^{\ast}\end{split}\]</div>
+<p>で表される. 一般にn回転後のベクトル <span class="math notranslate nohighlight">\(\boldsymbol{r}_{n}\)</span> は,</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r}_n = \tilde{Q}_n\boldsymbol{r}_0\tilde{Q}_n^{\ast}\]</div>
+<p>で表される. ただし <span class="math notranslate nohighlight">\(\tilde{Q}_n = \tilde{q}_{n}\tilde{q}_{n-1}\cdots \tilde{q}_{1}\)</span></p>
+<p>プログラム上では, 回転の度に全てのクォータニオンを掛け直すのではなく,
+n-1回転目の回転クォータニオン <span class="math notranslate nohighlight">\(\tilde{Q}_{n-1}\)</span> を記憶しておいて</p>
+<div class="math notranslate nohighlight">
+\[\tilde{Q}_n = \tilde{q}_{n}\tilde{Q}_{n-1}\]</div>
+<p>のようにして演算すれば良い.</p>
+</section>
+</section>
+<section id="slerp">
+<h2><span class="section-number">1.4. </span>球面補間(Slerp)<a class="headerlink" href="#slerp" title="Link to this heading"></a></h2>
+</section>
+<section id="id12">
+<h2><span class="section-number">1.5. </span>参考<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Wikipedia, 四元数, <a class="reference external" href="https://ja.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0">https://ja.wikipedia.org/wiki/%E5%9B%9B%E5%85%83%E6%95%B0</a></p></li>
+<li><p>谷田部 学, クォータニオン計算便利ノート, <a class="reference external" href="https://www.mss.co.jp/technology/report/pdf/18-07.pdf">https://www.mss.co.jp/technology/report/pdf/18-07.pdf</a></p></li>
+<li><p><a class="reference external" href="https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf">https://qiita.com/aa_debdeb/items/3d02e28fb9ebfa357eaf</a></p></li>
+<li><p><a class="reference external" href="https://risalc.info/src/quaternion-rotation.html">https://risalc.info/src/quaternion-rotation.html</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../main/incomp_simulator.html" class="btn btn-neutral float-left" title="5. 非圧縮流体の計算" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rigidbody.html" class="btn btn-neutral float-right" title="2. 剛体の運動(弱連成)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

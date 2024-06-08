@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. ユーザーカスタマイズの方法 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="4. Intel MKL を利用する方法" href="use_intel_mkl.html" />
+    <link rel="prev" title="2. 境界条件の作成例" href="makeBC.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. ユーザーカスタマイズの方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 計算の手続きの分類</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">3.2. オーバーライド可能なメンバ関数</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.2.1. 前処理</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#on_define_zone"><code class="docutils literal notranslate"><span class="pre">on_define_zone()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_loaded"><code class="docutils literal notranslate"><span class="pre">on_loaded()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create_boundary_condition"><code class="docutils literal notranslate"><span class="pre">create_boundary_condition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_restoring"><code class="docutils literal notranslate"><span class="pre">on_restoring()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_backupping"><code class="docutils literal notranslate"><span class="pre">on_backupping()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>ユーザーカスタマイズの方法</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/custom/plugin_case.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">3. </span>ユーザーカスタマイズの方法<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>ソルバでは予め組み込めない動作(例えば格子の変形, 境界条件など)については,
+汎用ケースクラス <code class="docutils literal notranslate"><span class="pre">case_commont_t</span></code> を継承した子クラスを作成し, それを
+ソルバに共有ライブラリの形で読みこませることで実現出来る. ここではその手順と,
+組み込み可能な動作について説明する.</p>
+<section id="id2">
+<h2><span class="section-number">3.1. </span>計算の手続きの分類<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>ソルバは大まかに, 以下の手順から成る.</p>
+<ol class="arabic simple">
+<li><p><strong>前処理</strong></p></li>
+<li><p><strong>計算メインループ</strong></p></li>
+</ol>
+<p><strong>前処理</strong> は主に以下の手順から成り, 1つの計算あたり1回だけ行われる.</p>
+<ol class="arabic simple">
+<li><p>格子の読み込み or バックアップ読み取りによる格子データ構築</p></li>
+<li><p>各種コンフィグファイルの読み取りと設定</p></li>
+<li><p>境界ゾーンの構築</p></li>
+<li><p>各ゾーンに対する境界条件の作成と設定</p></li>
+</ol>
+<p><strong>メインループ</strong> は以下の手順が繰り返し行われる.</p>
+<ol class="arabic simple">
+<li><p>格子の変形</p></li>
+<li><p>幾何量の更新</p></li>
+<li><p>事前処理 (無い場合が多い)</p></li>
+<li><p>速度, 圧力場の更新</p></li>
+<li><p>後処理</p></li>
+<li><p>データ書きだし</p></li>
+<li><p>バックアップデータの書き出し</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> クラスには, 上記それぞれの手順のための手続きが用意されている.
+ここに挙げていない細かな処理もあるが, それについては直接ソースファイルを参照して頂きたい.</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">3.2. </span>オーバーライド可能なメンバ関数<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>インターフェースをやむなく書いている. おそらく今後のソルバのアップデートでも引数仕様は変わらないと思われるが,
+今後の方針次第で書き方が変わるかも.</p>
+</div>
+<section id="id4">
+<h3><span class="section-number">3.2.1. </span>前処理<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>以下の処理は計算のメインループ前に1回だけ呼び出される.
+引数の <code class="docutils literal notranslate"><span class="pre">this</span></code> はメンバ関数を保持するクラスとその多相変数である.
+(これはfortranの言語仕様なので, 詳細な説明は省く.)</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="on_define_zone">
+<span class="sig-name descname"><span class="pre">on_define_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_define_zone" title="Link to this definition"></a></dt>
+<dd><p>境界ゾーンを定義する. 境界面1つ1つに対してこの関数を逐一呼び出す.
+面の重心 <code class="docutils literal notranslate"><span class="pre">face_center</span></code> や法線 <code class="docutils literal notranslate"><span class="pre">face_normal</span></code> を基準に, その面がどのゾーンに位置するかを書く.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>ゾーンを Wavefront ( <code class="docutils literal notranslate"><span class="pre">.obj</span></code> ) で指定する場合, ここの処理は書かなくて良い.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>指定した面に漏れがある場合, 正しい計算が出来ない. ソルバの方でも警告は出される.
+思った通りに境界面が指定されているかどうか確認するため, 表面格子の初期出力ファイル
+<code class="docutils literal notranslate"><span class="pre">surface_t000000.xmf</span></code> (0の数は設定により異なる) をParaviewで表示し, <code class="docutils literal notranslate"><span class="pre">zone_id</span></code> を
+可視化して目視でチェックすることが推奨される.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_loaded">
+<span class="sig-name descname"><span class="pre">on_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_restart</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_loaded" title="Link to this definition"></a></dt>
+<dd><p>計算の最初(格子データ構築後)に呼び出される.
+独自の初期条件を与える事が出来る. <code class="docutils literal notranslate"><span class="pre">is_restart</span></code> は論理値で, リスタート時のみの処理分岐も可能.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="create_boundary_condition">
+<span class="sig-name descname"><span class="pre">create_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#create_boundary_condition" title="Link to this definition"></a></dt>
+<dd><p>境界条件を設定する. 返値は境界条件オブジェクトのポインタ.
+以下のように書くことが推奨される.
+<code class="docutils literal notranslate"><span class="pre">values(:)</span></code> は境界値. 非圧縮性の場合は次元3で速度を表す.</p>
+<blockquote>
+<div><div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="c">!(中略)</span>
+<span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">YourBC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9999999</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bc_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">YourBC</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    </span><span class="n">bc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">your_bc_t</span><span class="p">()</span>
+<span class="k">else</span>
+<span class="k">    </span><span class="n">bc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">create_bc_default</span><span class="p">(</span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">)</span>
+<span class="k">end if</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">your_bc_t()</span></code> はユーザが作った境界条件クラス (例として <code class="docutils literal notranslate"><span class="pre">your_bc_t</span></code>) を値として返す関数(コンストラクタ).
+<code class="docutils literal notranslate"><span class="pre">create_bc_default</span></code> は予めライブラリとして用意されている関数.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_restoring">
+<span class="sig-name descname"><span class="pre">on_restoring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iostat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iomsg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_restoring" title="Link to this definition"></a></dt>
+<dd><p>リスタート時に呼び出される. <code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したバックアップデータをリスタート時に読み取るための処理.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したデータの順番通りに読み取る必要がある.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>配列データの読み取りはライブラリ <code class="docutils literal notranslate"><span class="pre">Serialization</span></code> モジュールの関数 <code class="docutils literal notranslate"><span class="pre">ReadArray</span></code> を使うと便利.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_backupping">
+<span class="sig-name descname"><span class="pre">on_backupping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iostat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iomsg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_backupping" title="Link to this definition"></a></dt>
+<dd><p>ユーザが独自に作成したケースクラスの変数をバックアップさせるための処理を書く.
+引数で受け取った装置番号 <code class="docutils literal notranslate"><span class="pre">unit</span></code> に書き出す.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>配列を書き出す場合, その配列のサイズを配列本体よりも前に書かなければならない.
+そうしないとバックアップデータの読み取り時に配列割付けが出来ない.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>配列データの書き出しはライブラリ <code class="docutils literal notranslate"><span class="pre">Serialization</span></code> モジュールの関数 <code class="docutils literal notranslate"><span class="pre">WriteArray</span></code> を使うと便利.</p>
+</div>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="makeBC.html" class="btn btn-neutral float-left" title="2. 境界条件の作成例" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="use_intel_mkl.html" class="btn btn-neutral float-right" title="4. Intel MKL を利用する方法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

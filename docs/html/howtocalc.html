@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. 計算プログラムの実行方法 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="1. メッシュデータ" href="main/fvm_mesh_data.html" />
+    <link rel="prev" title="1. インストールに必要なもの" href="howtoinstall.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 計算プログラムの実行方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. サンプルケースの実行</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3.1.1. 円管ポアズイユ流</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">3.2. 可視化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">3.3. リスタート</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>計算プログラムの実行方法</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/howtocalc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">3. </span>計算プログラムの実行方法<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>コンフィグファイルの中身など, 一部バージョンが古い記述がある.</p>
+</div>
+<p>インストール (<a class="reference internal" href="howtoinstall.html#id4"><span class="std std-ref">インストール手順</span></a> 参照) 終了後, 実行プログラムは以下のコマンドで実行出来る.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ afdetFractional &lt;case directory&gt;
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;case</span> <span class="pre">directory&gt;</span></code> に実行したい計算ケースのパスを渡す. 実際は,
+各ケースディレクトリに移動してから実行するので, 渡すパスはカレントディレクトリの相対パス (&quot; <code class="docutils literal notranslate"><span class="pre">.</span></code> &quot;) である.</p>
+<section id="id2">
+<h2><span class="section-number">3.1. </span>サンプルケースの実行<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sample</span></code> ディレクトリにはサンプルケースが入っている. 1つは <code class="docutils literal notranslate"><span class="pre">case_poiseuille</span></code> で, これは層流円管流である.
+もう一つは <code class="docutils literal notranslate"><span class="pre">project_piston</span></code> であり, これは移動格子用のサンプルである.</p>
+<section id="id3">
+<h3><span class="section-number">3.1.1. </span>円管ポアズイユ流<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>まず層流円管ポアズイユ流のサンプルケースを試しに実行する.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>afdet_solver-###(###はバージョン番号.)/
+    ├ DOC(ver1.0.8以前. それ以降含まれず)/
+    └ sample/
+        └ case_poiseuille/
+            ├ case_setting.txt
+            ├ solver_setting.txt
+            ├ time_io_control.txt
+            ├ backup/
+            ├ mesh/
+            |  ├ cylinder_tetra_long.vtk
+            |  └ cylinder_tetra_long.obj
+            └ output/
+</pre></div>
+</div>
+<p>まず, <code class="docutils literal notranslate"><span class="pre">case_poiseuille</span></code> ディレクトリに移動する. そこで以下のディレクトリを用意する.</p>
+<ul class="simple">
+<li><p>output : 出力ファイルの置き場所</p></li>
+<li><p>mesh : 計算に使用する格子の置き場所</p></li>
+<li><p>backup : 出力バックアップファイルの置き場所</p></li>
+</ul>
+<p>事前に用意されていると思われるが, 無い場合は自分で作成する. Linuxの場合,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~$ mkdir output
+</pre></div>
+</div>
+<p>とすれば <code class="docutils literal notranslate"><span class="pre">output</span></code> ディレクトリが作成される.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><code class="docutils literal notranslate"><span class="pre">output</span></code> , <code class="docutils literal notranslate"><span class="pre">backup</span></code> ディレクトリが無い場合, 計算は停止しないが, ファイルも出力されないので注意.</p>
+</div>
+<p>次に, コンフィグファイルを設定する.</p>
+<p><code class="docutils literal notranslate"><span class="pre">case_setting.txt</span></code> は以下のようになっている. メッシュファイルの指定, 代表パラメータ, 境界の個数, 境界条件を指定する.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>境界を指定する際に, <code class="docutils literal notranslate"><span class="pre">.obj</span></code> ファイルを指定出来る. 指定しない場合は該当箇所を削除する必要がある.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>ファイルを用いた境界の指定方法に関しては <a class="reference internal" href="custom/setup_boundary_zone.html"><span class="doc">境界ゾーンのファイル指定</span></a> を参照.</p>
+</div>
+<figure class="align-default" id="id6">
+<img alt="_images/case_setting.png" src="_images/case_setting.png" />
+<figcaption>
+<p><span class="caption-number">図 3.1 </span><span class="caption-text">ケース設定ファイル. 先頭行はバージョン, 2行目はコメント行.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>次に <code class="docutils literal notranslate"><span class="pre">solver_setting.txt</span></code> . 反復回数や閾値,加速係数などを指定する.</p>
+<figure class="align-default" id="id7">
+<img alt="_images/solver_settings.png" src="_images/solver_settings.png" />
+<figcaption>
+<p><span class="caption-number">図 3.2 </span><span class="caption-text">ソルバの設定パラメータ. Fortranのnamelistを利用している.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>最後に <code class="docutils literal notranslate"><span class="pre">time_io_control.txt</span></code>. 計算開始時刻と終了時刻, 時間刻み幅などを指定する.
+<code class="docutils literal notranslate"><span class="pre">START_FORM</span></code>, <code class="docutils literal notranslate"><span class="pre">STOP_AT</span></code> は それぞれ無次元時刻(<code class="docutils literal notranslate"><span class="pre">startTime</span></code>, <code class="docutils literal notranslate"><span class="pre">endTime</span></code>), ステップ数(<code class="docutils literal notranslate"><span class="pre">startStep</span></code>, <code class="docutils literal notranslate"><span class="pre">endStep</span></code>)
+を適用出来る.</p>
+<figure class="align-default" id="id8">
+<img alt="_images/time_io_control.png" src="_images/time_io_control.png" />
+<figcaption>
+<p><span class="caption-number">図 3.3 </span><span class="caption-text">時間に関するパラメータ.</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>これらを設定後, コマンドを実行する. 実行すると以下の画面が流れる. 画面に表示される情報が
+設定した値通りかどうか確認する.</p>
+<figure class="align-default" id="id9">
+<img alt="_images/console_pre_start.png" src="_images/console_pre_start.png" />
+<figcaption>
+<p><span class="caption-number">図 3.4 </span><span class="caption-text">計算開始直後の画面例の一部. 現在の設定で用いられる流束の評価方法, 反復計算の方法が示されている.
+コンフィグファイルで設定出来るものと, ソースファイルのプリプロセッサマクロを書き換える必要があるものが
+混在している.</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>計算が始まると以下の画面が1ステップ毎に表示される.</p>
+<figure class="align-default" id="id10">
+<img alt="_images/console_calculation.png" src="_images/console_calculation.png" />
+<figcaption>
+<p><span class="caption-number">図 3.5 </span><span class="caption-text">非圧縮性流体の計算画面. 1ステップ目は画面のように圧力のPoisson方程式の係数行列のサイズが表示される.
+その下に速度反復(LU-SGS)の反復回数と相対誤差, その次に圧力反復(BiCGSTAB/SOR)の反復回数と相対誤差が表示される.</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="id4">
+<h2><span class="section-number">3.2. </span>可視化<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<p>出力形式はデフォルトで <code class="docutils literal notranslate"><span class="pre">.xdmf</span></code> である. これは可視化ツール <code class="docutils literal notranslate"><span class="pre">Paraview</span></code> で表示出来る形式である.
+ツールと拡張子の詳細は省く.
+出力フォーマットはユーザが任意で変更することが出来るが, これについては <a class="reference internal" href="custom/plugin_case.html"><span class="doc">ユーザーカスタマイズの方法</span></a> に説明を譲る.</p>
+</section>
+<section id="id5">
+<h2><span class="section-number">3.3. </span>リスタート<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<p>前回までに計算したデータから, 再度計算を実行することをリスタートと呼ぶ.
+本ソルバでは, <code class="docutils literal notranslate"><span class="pre">time_io_control.txt</span></code> の <code class="docutils literal notranslate"><span class="pre">START_TIME</span></code> を再開したい時刻(あるいは時間ステップ)に指定する.
+時刻かステップかは <code class="docutils literal notranslate"><span class="pre">START_FORM</span></code> に依存する.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>指定した時刻(時間ステップ)に該当するバックアップファイルを探して読み,リスタートされる.
+該当するファイルが見つからない場合は <strong>停止せず</strong> , 時刻0から計算が始まる.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="howtoinstall.html" class="btn btn-neutral float-left" title="1. インストールに必要なもの" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="main/fvm_mesh_data.html" class="btn btn-neutral float-right" title="1. メッシュデータ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

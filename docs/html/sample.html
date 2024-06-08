@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEST &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">TEST</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sample.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="test">
+<h1>TEST<a class="headerlink" href="#test" title="Link to this heading"></a></h1>
+<p>これはテスト.</p>
+<p><a class="reference external" href="https://planset-study-sphinx.readthedocs.io/ja/latest/04.html#id10">https://planset-study-sphinx.readthedocs.io/ja/latest/04.html#id10</a> を参考に.</p>
+<section id="id1">
+<h2>サブセクション<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p><strong>強調</strong> する. 強調構文と普通の文の間には半角スペース.</p>
+<p><code class="docutils literal notranslate"><span class="pre">intro.rst</span></code> の内容.</p>
+<section id="id2">
+<h3>数式<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="http://sphinx.shibu.jp/ext/math.html">http://sphinx.shibu.jp/ext/math.html</a> を参考にする.</p>
+<p>インライン数式 <span class="math notranslate nohighlight">\(a = b + c\)</span></p>
+<p>あるいは行まるごと.</p>
+<div class="math notranslate nohighlight" id="equation-integral-x">
+<span class="eqno">()<a class="headerlink" href="#equation-integral-x" title="Link to this equation"></a></span>\[x = \int_{\Omega_{s}} \nabla \cdot {\bf u} d\Omega\]</div>
+<p>式番号はラベル付けしてから, おなじドキュメント内で <a class="reference internal" href="#equation-integral-x">()</a> のように参照.</p>
+</section>
+</section>
+<section id="id3">
+<h2>サブサブセクション<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>コードブロック. これも1行開けて書く.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">module </span><span class="n">sample</span>
+<span class="k">use </span><span class="n">other_module</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">hogehoge</span>
+<span class="k">implicit none</span>
+<span class="k">type </span><span class="n">sample_t</span>
+<span class="w">    </span><span class="kt">integer </span><span class="n">ii</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">rx</span><span class="p">(:)</span>
+<span class="w">    </span><span class="k">contains</span>
+<span class="k">    procedure</span><span class="p">,</span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hoge</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">huga</span>
+<span class="k">end type</span>
+
+<span class="k">type</span><span class="p">(</span><span class="n">sample_t</span><span class="p">),</span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">myclass</span>
+<span class="k">end module</span>
+
+<span class="k">program </span><span class="n">main</span>
+<span class="w">  </span><span class="k">implicit none</span>
+<span class="k">  </span><span class="kt">integer </span><span class="n">i</span>
+<span class="w">  </span><span class="kt">real </span><span class="n">x</span>
+
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">  </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="k">end do</span>
+
+<span class="k">end program</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

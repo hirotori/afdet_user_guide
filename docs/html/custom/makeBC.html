@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. 境界条件の作成例 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. ユーザーカスタマイズの方法" href="plugin_case.html" />
+    <link rel="prev" title="1. 境界ゾーンのファイル指定" href="setup_boundary_zone.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 境界条件の作成例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.1. 放物線分布の流入条件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2.1.1. クラスの定義</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.1.2. クラスの呼び出し</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>境界条件の作成例</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/custom/makeBC.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">2. </span>境界条件の作成例<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../main/boundary_condition.html"><span class="doc">境界条件</span></a> で示したとおり, 境界条件は境界条件クラスで実装されている.
+これらのクラスを任意に拡張することで, ユーザ独自の境界条件を定義することが可能である.
+以下では, ユーザ定義の境界条件クラスの例を挙げ, 具体的な拡張の仕方を提示する.</p>
+<section id="id2">
+<h2><span class="section-number">2.1. </span>放物線分布の流入条件<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>パイプ内流れやチャネル内流れを計算する場合, 流入条件を一様流としてしまうと,
+速度分布が完全に発達するまでの距離(助走区間)だけ余分に計算領域が必要である.
+計算格子数を節約するため, 一様流入ではなく完全に発達した層流ポアズイユ流を与えることを考える.</p>
+<section id="id3">
+<h3><span class="section-number">2.1.1. </span>クラスの定義<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>流れ方向を <span class="math notranslate nohighlight">\(x\)</span> 軸, 残りを <span class="math notranslate nohighlight">\(y,z\)</span> 軸とする. 半径 <span class="math notranslate nohighlight">\(R\)</span> の円管を流れる層流を
+考えるとしよう. 無次元化のため代表速度を <span class="math notranslate nohighlight">\(U_{\infty}\)</span> , 長さを <span class="math notranslate nohighlight">\(L_{\infty}\)</span> と置くと,
+無次元速度分布は次式で表される.</p>
+<div class="math notranslate nohighlight">
+\[u = \frac{\alpha}{4}Re\left\{ \left(\frac{R}{L_{\infty}}\right)^{2} - r^{2} \right\}\]</div>
+<p>ただし <span class="math notranslate nohighlight">\(r = \sqrt{y^{2} + z^{2}}\)</span> である. <span class="math notranslate nohighlight">\(Re\)</span> はレイノルズ数で, <span class="math notranslate nohighlight">\(\alpha\)</span> は
+無次元圧力勾配である.</p>
+<p>この速度分布を境界面に与える. 親クラスとして <code class="docutils literal notranslate"><span class="pre">fixed_value_patch_t</span></code> を選び,
+<code class="docutils literal notranslate"><span class="pre">bc_laminar_pipe_t</span></code> と名付ける. 定義は以下の通りとした.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">fixed_value_patch_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bc_laminar_pipe_t</span>
+<span class="w">    </span><span class="c">!!円管内ポアズイユ流の流速分布を与える.</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cross_avg_vel</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">        </span><span class="c">!!断面平均流速.</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">        </span><span class="c">!!面の中心. 外部で更新可能</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">Re_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp_</span>
+<span class="w">        </span><span class="c">!!レイノルズ数</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dpdx_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp_</span>
+<span class="w">        </span><span class="c">!!圧力勾配</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pipe_radius_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp_</span>
+<span class="w">        </span><span class="c">!!円管の半径(無次元)</span>
+<span class="w">    </span><span class="k">CONTAINS</span>
+<span class="k">    PROCEDURE</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">evaluate</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">fully_developed_pipe_laminar_flow</span>
+<span class="k">end type</span>
+</pre></div>
+</div>
+<p>メンバ変数として <code class="docutils literal notranslate"><span class="pre">cross_avg_vel</span></code> と <code class="docutils literal notranslate"><span class="pre">origin</span></code> を用意している.
+これは任意の向きにも対応できるようにするための配慮である. ただし <code class="docutils literal notranslate"><span class="pre">cross_avg_vel</span></code> は大きさが1となる必要がある.
+ほか, <code class="docutils literal notranslate"><span class="pre">Re_</span></code> , <code class="docutils literal notranslate"><span class="pre">dpdx_</span></code> も必要である. これらの値の初期化はコンストラクタを利用する.</p>
+<p>このクラスはまだ型束縛手続き <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> が未定義である. 上では <code class="docutils literal notranslate"><span class="pre">fully_developed_pipe_laminar_flow</span></code> という関数を定義し,
+<code class="docutils literal notranslate"><span class="pre">evaluate</span></code> と結合している.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>名前は <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> でも良いが, 1つのモジュール内に境界条件の複数の子クラスを書く場合は名前の衝突が起こるため,
+別名で定義する.</p>
+</div>
+<p>以下のように定義した.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">PURE SUBROUTINE </span><span class="n">fully_developed_pipe_laminar_flow</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">face_velocity</span><span class="p">,</span><span class="w"> </span><span class="n">face_center</span><span class="p">,</span><span class="w"> </span><span class="n">face_normal</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">prim_count</span><span class="p">,</span><span class="w"> </span><span class="n">ghost_q</span><span class="p">)</span>
+<span class="w">    </span><span class="k">CLASS</span><span class="p">(</span><span class="n">bc_laminar_pipe_t</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(:),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face_velocity</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face_center</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face_normal</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">distance</span>
+<span class="w">    </span><span class="kt">INTEGER</span><span class="p">,</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prim_count</span>
+<span class="w">    </span><span class="kt">REAL</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">DIMENSION</span><span class="p">(:),</span><span class="w"> </span><span class="k">INTENT</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ghost_q</span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="n">vel_</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">radius_</span>
+
+<span class="w">    </span><span class="n">radius_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">norm2</span><span class="p">(</span><span class="n">face_center</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">origin</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">vel_</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.25_wp_</span><span class="o">*</span><span class="n">this</span><span class="p">%</span><span class="n">cross_avg_vel</span><span class="p">(:)</span><span class="o">*</span><span class="n">this</span><span class="p">%</span><span class="n">Re_</span><span class="o">*</span><span class="n">this</span><span class="p">%</span><span class="n">dpdx_</span><span class="o">*</span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="n">pipe_radius_</span><span class="o">*</span><span class="n">this</span><span class="p">%</span><span class="n">pipe_radius_</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">radius_</span><span class="o">*</span><span class="n">radius_</span><span class="p">)</span>
+
+<span class="w">    </span><span class="n">ghost_q</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc_ghost_value</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">vel_</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="k">END SUBROUTINE</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">2.1.2. </span>クラスの呼び出し<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>作成したクラスを実際の計算で使用するため, ケースクラス <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> を拡張する必要がある.
+(ここでは <code class="docutils literal notranslate"><span class="pre">case_pois_t</span></code> としている)
+<a class="reference internal" href="plugin_case.html"><span class="doc">ユーザーカスタマイズの方法</span></a> で述べた <code class="docutils literal notranslate"><span class="pre">create_boundary_condition</span></code> を利用する.</p>
+<p>だいたい以下のようになる.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">function </span><span class="n">create_boundary_condition</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">case_pois_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bc_type</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">values</span><span class="p">(:)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bc</span>
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">bc_laminar_pipe_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bc_laminar_pipe_</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">YourBC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">        </span><span class="c">!!独自の境界条件番号を定義する.</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">PipeRadius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5_wp_</span>
+<span class="w">        </span><span class="c">!!無次元円管半径.(R/L∞)</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">DPDX_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0_wp_</span>
+<span class="w">        </span><span class="c">!!無次元圧力勾配.</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">bc_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">YourBC</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="c">!デフォルトのコンストラクタを呼び出し, クラスを初期化する.</span>
+<span class="w">        </span><span class="n">bc_laminar_pipe_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bc_laminar_pipe_t</span><span class="p">(</span><span class="n">values</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">Re_</span><span class="p">,</span><span class="w"> </span><span class="n">DPDX_</span><span class="p">,</span><span class="w"> </span><span class="n">PipeRadius</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!返値の境界条件オブジェクトに割り付ける.</span>
+<span class="w">        </span><span class="k">allocate</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bc_laminar_pipe_</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="k">        </span><span class="n">bc</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">create_bc_default</span><span class="p">(</span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">values</span><span class="p">)</span><span class="w">    </span><span class="c">! Don&#39;t remove.</span>
+<span class="w">    </span><span class="k">end if</span>
+<span class="k">end function</span>
+</pre></div>
+</div>
+<p>仮引数のケースクラスにはレイノルズ数がメンバとして与えられていないので,
+ここでは苦肉の策としてユーザ拡張クラスで独自に定義し(<code class="docutils literal notranslate"><span class="pre">this%Re_</span></code>), <code class="docutils literal notranslate"><span class="pre">on_loaded</span></code> 関数で更新することにした.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">on_loaded</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">fluid</span><span class="p">,</span><span class="w"> </span><span class="n">is_restart</span><span class="p">)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">case_pois_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">grid_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grid</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">fluid_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fluid</span>
+<span class="w">    </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_restart</span>
+
+<span class="w">    </span><span class="c">!(中略) ...</span>
+
+<span class="w">    </span><span class="n">this</span><span class="p">%</span><span class="n">Re_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluid</span><span class="p">%</span><span class="n">reynolds_number</span>
+
+<span class="w">    </span><span class="c">!(中略) ...</span>
+
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>ハードコーディング(直に与える)でも良いが, レイノルズ数は別の箇所で定義されるので間違える可能性もあることを考慮している.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="setup_boundary_zone.html" class="btn btn-neutral float-left" title="1. 境界ゾーンのファイル指定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plugin_case.html" class="btn btn-neutral float-right" title="3. ユーザーカスタマイズの方法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

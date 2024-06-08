@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. 後退差分クラス &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="4. バネ格子" href="springmesh.html" />
+    <link rel="prev" title="2. 剛体の運動(弱連成)" href="rigidbody.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 後退差分クラス</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 目的</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">3.2. 理論</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.2.1. 一次精度</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">3.2.2. 二次精度</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">3.2.3. 三次精度以上について</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">3.3. 実装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>後退差分クラス</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/libs/backward_diff.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">3. </span>後退差分クラス<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2><span class="section-number">3.1. </span>目的<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>主に移動境界において境界面の移動速度を計算する際に使われる.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>現在は三次精度まで対応している. デフォルトの設定は三次精度.</p>
+</div>
+</section>
+<section id="id3">
+<h2><span class="section-number">3.2. </span>理論<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>変数 <span class="math notranslate nohighlight">\(t\)</span> について非等間隔な離散化 <span class="math notranslate nohighlight">\(t^{n+1} =t^{n} + \Delta t_{n} \; (n = 0,1,2,\dots)\)</span> を施すときの
+関数 <span class="math notranslate nohighlight">\(f^{n+1} = f(t^{n+1})\)</span> の微分 <span class="math notranslate nohighlight">\(\left.\frac{df}{dt}\right |^{n+1}\)</span> について考える.</p>
+<section id="id4">
+<h3><span class="section-number">3.2.1. </span>一次精度<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p><span class="math notranslate nohighlight">\(\left.\frac{df}{dt}\right |^{n+1}\)</span> を <span class="math notranslate nohighlight">\(f^{n+1},f^{n}\)</span> だけで表すことを考える.
+<span class="math notranslate nohighlight">\(f^{n}\)</span> を <span class="math notranslate nohighlight">\(f^{n+1}\)</span> を基にTaylor展開すると</p>
+<div class="math notranslate nohighlight" id="equation-fn">
+<span class="eqno">(3.3)<a class="headerlink" href="#equation-fn" title="Link to this equation"></a></span>\[f^{n} = f^{n+1} - \left.\frac{df}{dt}\right |^{n+1} \Delta t_{n}
++ \frac{1}{2} \left.\frac{d^{2}f}{dt^{2}}\right |^{n+1} (\Delta t_{n})^2
++ O((\Delta t_{n})^3)\]</div>
+<p>となるから, 両辺を <span class="math notranslate nohighlight">\(\Delta t_n\)</span> で割って整理すると</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{df}{dt}\right |^{n+1} = \frac{f^{n+1}-f^{n}}{\Delta t_n} + O(\Delta t_n)\]</div>
+<p>を得る. 打ち切り誤差は一次のオーダーなので, これは一次精度である.</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">3.2.2. </span>二次精度<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>ステンシルを更に拡げて, <span class="math notranslate nohighlight">\(f^{n+1},f^n,f^{n-1}\)</span> で表すことを考える.
+<span class="math notranslate nohighlight">\(f^{n-1}\)</span> のTaylor展開により次式を得る.</p>
+<div class="math notranslate nohighlight" id="equation-fn-1">
+<span class="eqno">(3.4)<a class="headerlink" href="#equation-fn-1" title="Link to this equation"></a></span>\[\begin{split}&amp;f^{n-1} \\
+(&amp;=f(t^{n+1}-\Delta t_n-\Delta t_{n-1})) \\
+&amp;= f^{n+1} - \left.\frac{df}{dt}\right |^{n+1} (\Delta t_{n}+\Delta t_{n-1} )
++ \frac{1}{2} \left.\frac{d^{2}f}{dt^{2}}\right |^{n+1} (\Delta t_{n} + \Delta t_{n-1})^2 \\
+&amp;+ O((\Delta t_{n} + \Delta t_{n-1})^3)\end{split}\]</div>
+<p>式 <a class="reference internal" href="#equation-fn">(3.3)</a> と <a class="reference internal" href="#equation-fn-1">(3.4)</a> から, 2階微分を消去する. <span class="math notranslate nohighlight">\((1)\times a - (2)\times b\)</span> として
+2階微分を消去し1階微分を残すような <span class="math notranslate nohighlight">\(a,b\)</span> は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a &amp;= - \frac{\Delta t_n + \Delta t_{n-1}}{\Delta t_n \Delta t_{n-1}} \\
+b &amp;= - \frac{\Delta t_n}{\Delta t_{n-1}(\Delta t_n+\Delta t_{n-1})}\end{split}\]</div>
+<p>であるので, これより</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left.\frac{df}{dt}\right |^{n+1}
+&amp;= f^{n+1}\cdot \frac{2\Delta t_n + \Delta t_{n-1}}{\Delta t_n(\Delta t_n + \Delta t_{n-1})} \\
+&amp;+ f^{n}\cdot \left(- \frac{\Delta t_n + \Delta t_{n-1}}{\Delta t_n \Delta t_{n-1}} \right) \\
+&amp;+ f^{n-1}\cdot \left(\frac{\Delta t_n}{\Delta t_{n-1}(\Delta t_n + \Delta t_{n-1})}\right) \\
+&amp;+ O\left(\frac{\Delta t_{n}^2(\Delta t_{n} + \Delta t_{n-1}) + \Delta t_{n}(\Delta t_n + \Delta t_{n-1})^2}{\Delta t_{n-1}}\right)\end{split}\]</div>
+<p>となる. とくに <span class="math notranslate nohighlight">\(\Delta t_n = \Delta t_{n-1} = \Delta t\)</span> の場合は</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{df}{dt}\right |^{n+1}
+= \frac{\frac{3}{2} f^{n+1} - 2f^{n} + \frac{1}{2}f^{n-1}}{\Delta t} + O(\Delta t^2)\]</div>
+<p>となり, この差分が二次精度となることがわかる.</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">3.2.3. </span>三次精度以上について<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>三次精度以降も同様の手順を踏むことで高次差分を得られる.</p>
+<p>三次精度の場合は, <span class="math notranslate nohighlight">\(f^{n-2}\)</span> の <span class="math notranslate nohighlight">\(f^{n+1}\)</span> に関するTaylor展開</p>
+<div class="math notranslate nohighlight" id="equation-fn-2">
+<span class="eqno">(3.5)<a class="headerlink" href="#equation-fn-2" title="Link to this equation"></a></span>\[\begin{split}&amp;f^{n-2} \\
+&amp;= f^{n+1} - \left.\frac{df}{dt}\right |^{n+1} (\Delta t_{n}+\Delta t_{n-1}+\Delta t_{n-2}) \\
+&amp;+ \frac{1}{2} \left.\frac{d^{2}f}{dt^{2}}\right |^{n+1} (\Delta t_{n} + \Delta t_{n-1}+\Delta t_{n-2})^2 \\
+&amp;+ \frac{1}{3!}\left.\frac{d^{3}f}{dt^{3}}\right |^{n+1}(\Delta t_{n} + \Delta t_{n-1}+\Delta t_{n-2})^3\end{split}\]</div>
+<p>と先ほどの <a class="reference internal" href="#equation-fn">(3.3)</a>, <a class="reference internal" href="#equation-fn-1">(3.4)</a> を利用して, 2階微分と3階微分とを消去することにより得られる.</p>
+<p><span class="math notranslate nohighlight">\((1)*a_1 + (2)*a_2 + (3)*a_3\)</span> により次の連立方程式を得る.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_1\Delta t_{n} + a_2(\Delta t_{n} + \Delta t_{n-1}) + a_3(\Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2}) &amp;= -1 \\
+a_1\Delta t_{n}^{2} + a_2(\Delta t_{n} + \Delta t_{n-1})^{2} + a_3(\Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2})^{2} &amp;= 0 \\
+a_1\Delta t_{n}^{3} + a_2(\Delta t_{n} + \Delta t_{n-1})^{2} + a_3(\Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2})^{3} &amp;= 0 \\\end{split}\]</div>
+<p>あるいは行列表記で</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{bmatrix}
+\Delta t_{n} &amp; \Delta t_{n} + \Delta t_{n-1} &amp; \Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2}\\
+\Delta t_{n}^2 &amp; (\Delta t_{n} + \Delta t_{n-1})^2 &amp; (\Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2})^2\\
+\Delta t_{n}^3 &amp; (\Delta t_{n} + \Delta t_{n-1})^3 &amp; (\Delta t_{n} + \Delta t_{n-1} + \Delta t_{n-2})^3\\
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3 \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+-1\\0\\0
+\end{bmatrix}\end{split}\]</div>
+<p>のように書ける. これを解くと, 各係数は次のようになる.
+なお計算にはSympyを用いた.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_1 &amp;= - \frac{\left(x + y\right) \left(x + y + z\right)}{x y \left(y + z\right)} \\
+a_2 &amp;= \frac{x \left(x + y + z\right)}{y z \left(x + y\right)} \\
+a_3 &amp;= - \frac{x \left(x + y\right)}{z \left(y + z\right) \left(x + y + z\right)} \\
+a_1 + a_2 + a_3 &amp;= - \frac{3 x^{2} + 4 x y + 2 x z + y^{2} + y z}{x \left(x + y\right) \left(x + y + z\right)}\end{split}\]</div>
+<p>ただし <span class="math notranslate nohighlight">\(x = \Delta t_n, y = \Delta t_{n-1}, z = \Delta t_{n-2}\)</span> とおいた.
+このとき, 三次精度後退差分は</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{df}{dt}\right |^{n+1}
+\simeq -(a_1 + a_2 + a_3)f^{n+1} + a_1 f^{n} + a_2 f^{n-1} + a_3 f^{n-2}\]</div>
+<p>で求められる.</p>
+<p>おそらく必要ないが, 一般化することは可能である.
+<span class="math notranslate nohighlight">\(k+2\)</span> 個のデータ <span class="math notranslate nohighlight">\(f^{n+1},f^{n},\dots,f^{n-k}\;(k&lt;n)\)</span> を用いて <span class="math notranslate nohighlight">\(k+1\)</span> 次精度の後退差分を求めるには,</p>
+<div class="math notranslate nohighlight">
+\[{\bf \Delta}{\bf a} = {\bf b}\]</div>
+<p>なる線形方程式系を解いて <span class="math notranslate nohighlight">\({\bf a} = a_1,a_2,\dots, a_{k+1}\)</span> を求め</p>
+<div class="math notranslate nohighlight">
+\[\left.\frac{df}{dt}\right |^{n+1}
+= \left(\sum_{l=1}^{k+1} a_{l}\right) f^{n+1} + \sum_{l=1}^{k+1} a_{l}f^{n+1-l}\]</div>
+<p>により高次差分を求める. ただし,</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\begin{split}{\bf \Delta} =
+\begin{bmatrix}
+\Delta t_{n} &amp; \Delta t_{n} + \Delta t_{n-1} &amp; \cdots &amp; \sum_{l=0}^{k} \Delta t_{n-l} \\
+\Delta t_{n}^2 &amp; (\Delta t_{n} + \Delta t_{n-1})^2 &amp; \cdots &amp; \left(\sum_{l=0}^{k} \Delta t_{n-l}\right)^2 \\
+\vdots &amp; \vdots &amp; \ddots &amp;\vdots \\
+\Delta t_{n}^{k+1} &amp; (\Delta t_{n} + \Delta t_{n-1})^{k+1} &amp; \cdots &amp; \left(\sum_{l=0}^{k} \Delta t_{n-l}\right)^{k+1}
+\end{bmatrix},\end{split}\\\begin{split}{\bf b}
+=
+\begin{bmatrix}
+-1\\0\\ \vdots \\0
+\end{bmatrix}\end{split}\end{aligned}\end{align} \]</div>
+<p>である.</p>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">3.3. </span>実装<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">backward_difference_t</span></code> クラスに実装されている.</p>
+<p>ソルバでは, <code class="docutils literal notranslate"><span class="pre">boundary_t</span></code> のメンバとして保持されており, 移動境界の境界面速度を計算するために用いられている.
+なお算出に当たっては界面の重心ベクトル <span class="math notranslate nohighlight">\({\bf r}_{f}\)</span> を用いる. つまりベクトルの各成分に対して上記の後退差分を
+適用することにより, 界面の移動速度ベクトルを計算する.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rigidbody.html" class="btn btn-neutral float-left" title="2. 剛体の運動(弱連成)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="springmesh.html" class="btn btn-neutral float-right" title="4. バネ格子" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

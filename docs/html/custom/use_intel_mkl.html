@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. Intel MKL を利用する方法 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="prev" title="3. ユーザーカスタマイズの方法" href="plugin_case.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Intel MKL を利用する方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">4.1. 概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.2. 手順</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.2.1. Intel MKLのインストール</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.2.2. プログラムの作成</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#makefile">4.2.3. MakeFileへの記述</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>Intel MKL を利用する方法</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/custom/use_intel_mkl.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="intel-mkl">
+<h1><span class="section-number">4. </span>Intel MKL を利用する方法<a class="headerlink" href="#intel-mkl" title="Link to this heading"></a></h1>
+<section id="id1">
+<h2><span class="section-number">4.1. </span>概要<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>機能を追加する上で, 擬似逆行列や特異値分解が必要になるケースが有り得る.
+Intel Math Kernel Library (MKL) は intel製アーキテクチャ向けに最適化された
+行列計算やFFT, マトリクスソルバ等を含む高機能ライブラリ群である.
+自作するよりも遙かに高性能であり, かつ信頼性の高いライブラリであるためバグの混入を
+避けることが出来る点が魅力的であるが, 利用のための手順がややこしいのでここにまとめる.</p>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.2. </span>手順<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3><span class="section-number">4.2.1. </span>Intel MKLのインストール<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Intel OneAPIのHPC Toolkitに含まれる. とくにインストールオプションを選択していない限りはインストール出来ている.
+場所はLinuxであれば <code class="docutils literal notranslate"><span class="pre">\opt\intel\mkl</span></code> で存在を確認することが出来る.</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">4.2.2. </span>プログラムの作成<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>BLASを使いたければ <code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">blas95</span></code> , LAPACKなら <code class="docutils literal notranslate"><span class="pre">use</span> <span class="pre">lapack95</span></code> とする.
+後ろの <code class="docutils literal notranslate"><span class="pre">95</span></code> とはFortran95 インタフェースのことであり, オリジナルよりも引数の個数が軽減され使いやすくなっている.</p>
+<p>例として, 実特異値分解により連立方程式 <span class="math notranslate nohighlight">\({\bf A}{\bf x} = {\bf b}\)</span>  を行う場合を考える. 次のように書く.</p>
+<div class="highlight-fortran notranslate"><div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">solve_by_svd3</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">)</span>
+<span class="w">    </span><span class="k">use </span><span class="n">lapack95</span>
+<span class="w">    </span><span class="k">use </span><span class="n">blas95</span>
+<span class="w">    </span><span class="k">implicit none</span>
+<span class="k">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">A</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!!3×3行列</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!!定数ベクトル</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">),</span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!!解ベクトル</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">info</span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">U</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">VT</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">S</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">WW</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">wp_</span><span class="p">)</span><span class="w"> </span><span class="n">tmp_</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">gesvd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">VT</span><span class="p">,</span><span class="w"> </span><span class="n">WW</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">info</span><span class="p">)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">gemv</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">tmp_</span><span class="p">,</span><span class="w"> </span><span class="n">trans</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">tmp_</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp_</span><span class="p">(:)</span><span class="o">/</span><span class="n">S</span><span class="p">(:)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">gemv</span><span class="p">(</span><span class="n">VT</span><span class="p">,</span><span class="w"> </span><span class="n">tmp_</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">trans</span><span class="o">=</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+<span class="k">end subroutine</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">gesvd</span></code> で実特異値分解サブルーチンを呼び出している. <code class="docutils literal notranslate"><span class="pre">gesvd</span></code> は特異値分解を行うサブルーチンの総称名であり,
+引数の型に合わせて適切なサブルーチンが呼び出される.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gemv</span></code> はベクトルと行列の積を計算するblas level2 ライブラリである. これも総称名.</p>
+</section>
+<section id="makefile">
+<h3><span class="section-number">4.2.3. </span>MakeFileへの記述<a class="headerlink" href="#makefile" title="Link to this heading"></a></h3>
+<p>プラグイン <code class="docutils literal notranslate"><span class="pre">afdetUCC.so</span></code> の作成のためにmakefileを記述する. このとき, インストールされたライブラリを適切に
+リンクさせる必要がある.</p>
+<p>まずMKLライブラリを使用するために, コンパイルオプションは <code class="docutils literal notranslate"><span class="pre">-qmkl</span> <span class="pre">-shared-intel</span></code> とする.
+そもそもこれがないとコンパイル済みの <code class="docutils literal notranslate"><span class="pre">libafdet.a</span></code> に上手くリンク出来ない.</p>
+<p>このままコンパイルすることもおそらく可能であるが, メインプログラム実行時に <code class="docutils literal notranslate"><span class="pre">symbol</span> <span class="pre">look</span> <span class="pre">up</span> <span class="pre">error</span> <span class="pre">::</span></code> なるものが出てランタイムエラーとなると思われる.
+<code class="docutils literal notranslate"><span class="pre">-qmkl</span></code> だけではアクセス出来ていないため?</p>
+<p>そこで, <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl-link-line-advisor.html#gs.6e5df2">Intel® oneAPI Math Kernel Library Link Line Advisor</a> を利用する.
+上から順番に項目を指定して, 最後に出力されるリンカ行とオプション行をコピーし, それぞれ <code class="docutils literal notranslate"><span class="pre">LDFLAGS,</span> <span class="pre">INCLUDE</span></code> に追加する.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>Select interface layer: は <code class="docutils literal notranslate"><span class="pre">Fortran</span> <span class="pre">API</span> <span class="pre">with</span> <span class="pre">32-bit</span> <span class="pre">integer</span></code> を選択する必要がある. 本ソルバは 32bitの整数を利用しているためである.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plugin_case.html" class="btn btn-neutral float-left" title="3. ユーザーカスタマイズの方法" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

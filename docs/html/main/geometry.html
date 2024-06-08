@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. 幾何量の計算 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. 境界条件" href="boundary_condition.html" />
+    <link rel="prev" title="1. メッシュデータ" href="fvm_mesh_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 幾何量の計算</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.1. 面の表面積と重心</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2.1.1. 面積の計算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.1.2. 重心の計算</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">2.2. セルの体積と重心</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">2.2.1. 体積の計算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">2.2.2. 重心の計算</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">2.3. その他</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id11">2.3.1. 面-セル間距離</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>幾何量の計算</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/main/geometry.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">2. </span>幾何量の計算<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>有限体積法で流れ計算を実施する場合, セルの体積やセルの面の面積,法線ベクトルなどが必要となる.
+ここではこれらの幾何量の計算方法についてまとめておく.
+まず実際に用いられる幾何量計算のアルゴリズムについて説明する.
+.. その後で実際のコードを例に関連付けて説明する.</p>
+<section id="id2">
+<h2><span class="section-number">2.1. </span>面の表面積と重心<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>本ソルバの場合, 面の形状は主に三角形(triangle)か四角形(quadlirateral)である.
+多面体を扱えるようになると, さらに別の多角形も有り得る.</p>
+<section id="id3">
+<h3><span class="section-number">2.1.1. </span>面積の計算<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>三角形面の面積はベクトルの外積を利用する.</p>
+<div class="math notranslate nohighlight" id="equation-eq-tri-surface-area">
+<span class="eqno">(2.1)<a class="headerlink" href="#equation-eq-tri-surface-area" title="Link to this equation"></a></span>\[\boldsymbol{S} = \frac{1}{2} \left(\boldsymbol{r}_{2}-\boldsymbol{r}_{1} \right) \times \left(\boldsymbol{r}_{3}-\boldsymbol{r}_{1} \right)\]</div>
+<figure class="align-default" id="id14">
+<img alt="../_images/face_area.png" src="../_images/face_area.png" />
+<figcaption>
+<p><span class="caption-number">図 2.4 </span><span class="caption-text">三角形の面積(ベクトル).</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>四角形など一般の形状については以下の座標法(または靴紐の公式, shoelace formula)を利用する事が出来る.
+面を構成する頂点を反時計回りに並べるとき, 面積は次式で計算出来る.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{S} = \frac{1}{2} \sum_{v = 1}^{N_{v}} \boldsymbol{r}_{v} \times \boldsymbol{r}_{v+1}\]</div>
+<p>ここで, <span class="math notranslate nohighlight">\(\boldsymbol{r}_{N_{v}+1}=\boldsymbol{r}_{1}\)</span> である.
+とくに四角形の場合は, 上式を適用した上で式変形を施し,</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{S} = \frac{1}{2} \left(\boldsymbol{r}_{3}-\boldsymbol{r}_{1} \right) \times \left(\boldsymbol{r}_{4}-\boldsymbol{r}_{2} \right)\]</div>
+<p>として計算する. <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバ <code class="docutils literal notranslate"><span class="pre">face_areas(1:face_count)</span></code> に面の面積が格納される.</p>
+<figure class="align-default" id="id15">
+<img alt="../_images/quadlilateral_surface.png" src="../_images/quadlilateral_surface.png" />
+<figcaption>
+<p><span class="caption-number">図 2.5 </span><span class="caption-text">四角形の面積の公式.</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id4">
+<span id="id5"></span><h3><span class="section-number">2.1.2. </span>重心の計算<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>次に重心(centroid)の計算について述べる.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>geometric center と centorid の用語の使い分けが曖昧. Wikipediaだと geometric center と centorid は同一視されている.
+しかしMoukalledの本だと, geometric center は図形を構成する頂点の算術平均で, centroid は別物扱いされている.
+とりあえずMoukalledの本に沿って用語を扱う.</p>
+</div>
+<p>三角形の場合, 重心は幾何図心と一致する. すなわち,</p>
+<div class="math notranslate nohighlight" id="equation-eq-tri-centroid">
+<span class="eqno">(2.2)<a class="headerlink" href="#equation-eq-tri-centroid" title="Link to this equation"></a></span>\[\boldsymbol{r}_{C} = \boldsymbol{r}_{G} = \frac{\boldsymbol{r}_{1} + \boldsymbol{r}_{2} + \boldsymbol{r}_{3}}{3}\]</div>
+<p>四角形の場合は, 2つの三角形に分割し, 以下の公式により求める.</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r}_{C} = \frac{\sum_{t=1}^{2} \boldsymbol{r}_{G}^{t}\cdot S}{S}\]</div>
+<p>ここで <span class="math notranslate nohighlight">\(\boldsymbol{r}_{G}^{t}\)</span> は分割した各三角形 <span class="math notranslate nohighlight">\(t\)</span> の図心で, 式 <a class="reference internal" href="#equation-eq-tri-centroid">(2.2)</a>  より計算する.
+また <span class="math notranslate nohighlight">\(S=|\boldsymbol{S}|\)</span> は分割した三角形の面積で 式 <a class="reference internal" href="#equation-eq-tri-surface-area">(2.1)</a> より計算する.</p>
+<p><code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバ <code class="docutils literal notranslate"><span class="pre">face_centers(1:3,1:face_count)</span></code> に面の重心が格納される.</p>
+</section>
+</section>
+<section id="id6">
+<h2><span class="section-number">2.2. </span>セルの体積と重心<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3><span class="section-number">2.2.1. </span>体積の計算<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>3次元セルの体積はGaussの発散定理を利用して計算する.
+ベクトル値関数 <span class="math notranslate nohighlight">\(\boldsymbol{f}(\boldsymbol{x})=(f_{1}(\boldsymbol{x}),f_{2}(\boldsymbol{x}),f_{3}(\boldsymbol{x}))^{T}\)</span>
+に対してガウスの発散定理は</p>
+<div class="math notranslate nohighlight">
+\[\int_{V}\nabla \cdot \boldsymbol{f} dV=\int_{S} \boldsymbol{n} \cdot \boldsymbol{f} dS\]</div>
+<p>で表される. ここで <span class="math notranslate nohighlight">\(V\)</span> は検査体積, <span class="math notranslate nohighlight">\(S\)</span> は検査表面, <span class="math notranslate nohighlight">\(\boldsymbol{n}\)</span> は外向き法線ベクトルである.
+また, <span class="math notranslate nohighlight">\(\nabla \cdot \boldsymbol{f} = \frac{\partial f_{i}}{\partial x_{i}}\)</span> である.
+ベクトル値関数として <span class="math notranslate nohighlight">\(f_{i}=x_{i}\)</span> を取ると,</p>
+<div class="math notranslate nohighlight">
+\[\int_{V}\nabla \cdot \boldsymbol{x}dV=\int_{S}\boldsymbol{n} \cdot \boldsymbol{f}dS\]</div>
+<p>ここで, 左辺は <span class="math notranslate nohighlight">\(\frac{\partial x_{i}}{\partial x_{i}}=3\)</span> より</p>
+<div class="math notranslate nohighlight">
+\[\int_{V}\frac{\partial x_{i}}{\partial x_{i}}dV=3\int_{V}dV=3V\]</div>
+<p>なので,</p>
+<div class="math notranslate nohighlight">
+\[V=\frac{1}{3}\int_{S}n_{i}x_{i}dS\]</div>
+<p>と計算出来る. 右辺の積分を,重心点で近似すると,</p>
+<div class="math notranslate nohighlight">
+\[V=\frac{1}{3}\int_{S}n_{i}x_{i}dS \simeq \frac{1}{3} \sum_{f \sim nb(C)} \boldsymbol{n}_{f} \cdot \boldsymbol{x}_{f}S_{f}\]</div>
+<p>を得る. これが体積を求める近似式である. この方法は任意の図形に適用出来る.
+四角形などの面がねじれて平面でなくなる場合は,三角形に分割してそれぞれの三角形についての和を取れば良い.
+<code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバ <code class="docutils literal notranslate"><span class="pre">cell_volumes(1:cell_count)</span></code> に格納される.</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">2.2.2. </span>重心の計算<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>重心は以下の公式から計算される. 導出はWang <a class="footnote-reference brackets" href="#id13" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> を参照.</p>
+<div class="math notranslate nohighlight" id="equation-eq-cell-centroid">
+<span class="eqno">(2.3)<a class="headerlink" href="#equation-eq-cell-centroid" title="Link to this equation"></a></span>\[\boldsymbol{r}_{C} = \frac{3}{4}\frac{\sum_{f \sim nb(C)}(\boldsymbol{n}_{f}\cdot \boldsymbol{r}_{f})\boldsymbol{r}_{f}S_{f}}{\sum_{f \sim nb(C)}\boldsymbol{n}_{f}\cdot \boldsymbol{r}_{f}S_{f}}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>本ソルバはこの方法を採用しているのだが, <strong>重心がセルから飛び出すケースがある.</strong>
+四角形面が平面から外れている(ねじれている)場合に起こりやすい.
+面を三角形分割して対処するか, あるいは飛び出した場合にそのセルだけ幾何中心(即ちセルの節点座標の和を節点数で割った平均)で代用するなどの対策が必要である.
+本ソルバは後者を採用している. 詳細は <code class="docutils literal notranslate"><span class="pre">grid.f90</span></code> のプリプロセッサマクロ <code class="docutils literal notranslate"><span class="pre">PRISM_CENTER_CORRECTIONE</span></code> を参照.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバ <code class="docutils literal notranslate"><span class="pre">cell_centers(1:3,1:cell_count2)</span></code> に格納される. 仮想セルに対してもセル重心を,
+面に関して鏡面対象となる位置に定義する. (<a class="reference internal" href="fvm_mesh_data.html#fig-boundary-and-ghost-cells"><span class="std std-numref">図 1.4</span></a> 参照)</p>
+</section>
+</section>
+<section id="id10">
+<h2><span class="section-number">2.3. </span>その他<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<section id="id11">
+<span id="id12"></span><h3><span class="section-number">2.3.1. </span>面-セル間距離<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバ <code class="docutils literal notranslate"><span class="pre">face_cell_disances(1:2,1:face_count)</span></code> は, 面からセル重心への距離を格納する.
+第1次元は面から見てどちらのセルかを意味する. (<a class="reference internal" href="fvm_mesh_data.html#id8"><span class="std std-ref">面からセルへ</span></a> のアクセス方法と同じ.)
+セル重心座標を <span class="math notranslate nohighlight">\({\bf r}_{C}\)</span> , 面の重心を <span class="math notranslate nohighlight">\({\bf r}_{f}\)</span> ,  面の単位法線を <span class="math notranslate nohighlight">\({\bf n}_{f}\)</span> とおくと,
+以下のように表される.</p>
+<div class="math notranslate nohighlight">
+\[d_{Cf} = | ({\bf r}_{f} - {\bf r}_{C}) \cdot {\bf n}_{f} |\]</div>
+<p>面ｰセル間距離は主に物理量の面への内挿を計算する際の重み (weighting factor) として用いられる.</p>
+<figure class="align-default" id="id16">
+<img alt="../_images/face_cell_dist.png" src="../_images/face_cell_dist.png" />
+<figcaption>
+<p><span class="caption-number">図 2.6 </span><span class="caption-text">セル重心と, 面との間の距離.</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>References</strong></p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id13" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">1</a><span class="fn-bracket">]</span></span>
+<p>Z.J. Wang, Improved Formulation for Geometric Properties of Arbitrary Polyhedra, AIAA Journal. 37 (1999) 1326–1327. <a class="reference external" href="https://doi.org/10.2514/2.604">https://doi.org/10.2514/2.604</a>.</p>
+</aside>
+</aside>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fvm_mesh_data.html" class="btn btn-neutral float-left" title="1. メッシュデータ" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="boundary_condition.html" class="btn btn-neutral float-right" title="3. 境界条件" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

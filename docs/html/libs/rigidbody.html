@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2. 剛体の運動(弱連成) &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="3. 後退差分クラス" href="backward_diff.html" />
+    <link rel="prev" title="1. クォータ二オン" href="quaternion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 剛体の運動(弱連成)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.1. 理論</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2.1.1. 並進運動</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.1.2. 回転運動</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">2.1.2.1. 主慣性モーメント</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">2.1.3. クォータニオン</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">2.2. 離散化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">2.3. 実装</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">2.3.1. 事前準備</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">2.3.2. 並進運動</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">2.3.3. 回転運動</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">2.4. 参考</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>剛体の運動(弱連成)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/libs/rigidbody.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">2. </span>剛体の運動(弱連成)<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2><span class="section-number">2.1. </span>理論<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>周囲流体の力を受けて運動する剛体の運動を考える.</p>
+<section id="id3">
+<h3><span class="section-number">2.1.1. </span>並進運動<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>物体の質量を <span class="math notranslate nohighlight">\(M\)</span> , 重心の位置ベクトルを <span class="math notranslate nohighlight">\({\bf r}_{G}\)</span> とおく.
+Newtonの第2法則に従うとすれば, 物体の運動は次のような微分方程式で記述される.</p>
+<div class="math notranslate nohighlight" id="equation-newtons-2nd-law">
+<span class="eqno">(2.4)<a class="headerlink" href="#equation-newtons-2nd-law" title="Link to this equation"></a></span>\[M \ddot{{\bf r}_{G}} = {\bf F} + M{\bf g}\]</div>
+<p>ここで, <span class="math notranslate nohighlight">\({\bf g}\)</span> は重力加速度である. 座標系のどの向きを重力が働く方向とするかによって,
+<span class="math notranslate nohighlight">\({\bf g}\)</span> の向きは変わる. 例えば <span class="math notranslate nohighlight">\(z\)</span> を重力の働く方向と設定するならば, <span class="math notranslate nohighlight">\({\bf g} = g {\bf e}_{z}\)</span> である.
+ただし <span class="math notranslate nohighlight">\({\bf e}_{z}\)</span> は単位ベクトルで, <span class="math notranslate nohighlight">\(g = \left\| {\bf g} \right\| \simeq 9.806 {\rm [m/s]}\)</span> である.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>重力加速度の大きさについて</p>
+<p>後述するが大きさはユーザが設定しなければならない.</p>
+</div>
+<p>のちの離散化のため, <a class="reference internal" href="#equation-newtons-2nd-law">(2.4)</a> を次のように2段に分けて書く.</p>
+<div class="math notranslate nohighlight" id="equation-system-newton">
+<span class="eqno">(2.5)<a class="headerlink" href="#equation-system-newton" title="Link to this equation"></a></span>\[\begin{split}M \dot{{\bf v}} &amp;= {\bf F} + M{\bf g} \\
+\dot{{\bf r}_{G}} &amp;= {\bf v}\end{split}\]</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">2.1.2. </span>回転運動<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>剛体のある点周りの運動はつぎのオイラー方程式に従う. 空間に固定された慣性座標系を <span class="math notranslate nohighlight">\((x,y,z)\)</span> で表し,
+これをグローバル座標系(あるいはワールド座標系)とよぶ.
+また, 剛体の重心を原点にとりその慣性主軸 <span class="math notranslate nohighlight">\((\xi,\eta,\zeta)\)</span>  を剛体と共に回転するあらたな座標系とし,
+これをローカル座標系と呼ぶことにする.</p>
+<p>慣性座標系で回転運動を表すと, 慣性モーメントと慣性主軸の時間微分が含まれるため厄介である. そこで, 数値計算では
+Eulerの運動方程式を用いることでこの欠点を避ける.</p>
+<p>剛体の角速度 <span class="math notranslate nohighlight">\({\boldsymbol \omega}\)</span> の <span class="math notranslate nohighlight">\(\xi,\eta,\zeta\)</span> 方向成分を <span class="math notranslate nohighlight">\(\omega_{\xi},\omega_{\eta},\omega_{\zeta}\)</span>
+とし, トルク <span class="math notranslate nohighlight">\({\bf T}\)</span> の <span class="math notranslate nohighlight">\(\xi,\eta,\zeta\)</span> 方向成分を <span class="math notranslate nohighlight">\(T_{\xi},T_{\eta},T_{\zeta}\)</span> とすると,</p>
+<div class="math notranslate nohighlight" id="equation-euler-eqs">
+<span class="eqno">(2.6)<a class="headerlink" href="#equation-euler-eqs" title="Link to this equation"></a></span>\[\begin{split}I_{\xi} \frac{d \omega_{\xi}}{dt} - \left( I_{\eta} - I_{\zeta} \right) \omega_{\eta} \omega_{\zeta} = T_{\xi} \\
+I_{\eta} \frac{d \omega_{\eta}}{dt} - \left( I_{\zeta} - I_{\xi} \right) \omega_{\zeta} \omega_{\xi} = T_{\eta} \\
+I_{\zeta} \frac{d \omega_{\zeta}}{dt} - \left( I_{\xi} - I_{\eta} \right) \omega_{\xi} \omega_{\eta} = T_{\zeta} \\\end{split}\]</div>
+<p>で表される. ただし <span class="math notranslate nohighlight">\(I_{\xi},I_{\eta},I_{\zeta}\)</span> は <span class="math notranslate nohighlight">\(\xi,\eta,\zeta\)</span> 方向の主慣性モーメントである.</p>
+<section id="id5">
+<h4><span class="section-number">2.1.2.1. </span>主慣性モーメント<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
+<p><a class="reference internal" href="#equation-euler-eqs">(2.6)</a> より回転角速度を求めるためには, 慣性主軸と主慣性モーメントを求める必要がある.
+慣性モーメントはその定義から実対称行列である. したがって直交行列 <span class="math notranslate nohighlight">\(P\)</span> によって対角化することが出来る.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}P^{-1}IP = \Lambda =
+\begin{bmatrix}
+\lambda_{1} &amp; 0 &amp; 0 \\
+0 &amp; \lambda_{2} &amp; 0 \\
+0 &amp; 0 &amp; \lambda_{3}
+\end{bmatrix}\end{split}\]</div>
+<p>右辺の <span class="math notranslate nohighlight">\(\lambda_{i}\: (i = 1,2,3)\)</span> が主慣性モーメントである.
+また直交行列 <span class="math notranslate nohighlight">\(P\)</span> は座標変換の行列である. 例えばグローバル座標系の角運動量</p>
+<div class="math notranslate nohighlight">
+\[L = I \boldsymbol{\omega}\]</div>
+<p>を座標変換する. 慣性主軸から測った角速度ベクトルを <span class="math notranslate nohighlight">\(\boldsymbol{\omega}'\)</span> とおく.
+両者に <span class="math notranslate nohighlight">\(\boldsymbol{\omega} = P \boldsymbol{\omega}'\)</span> の関係があるとすると,</p>
+<div class="math notranslate nohighlight">
+\[L = IP\boldsymbol{\omega}'\]</div>
+<p>両辺に <span class="math notranslate nohighlight">\(P^{-1}\)</span> を左から掛けると,</p>
+<div class="math notranslate nohighlight">
+\[P^{-1}L = \Lambda \boldsymbol{\omega}'\]</div>
+<p>となって, この座標系では慣性テンソルが対角化されていることがわかる.</p>
+<p>したがって, グローバル座標系から慣性主軸への変換は, 左から逆行列 <span class="math notranslate nohighlight">\(P^{-1} = P^{T}\)</span> を
+掛けることで求められる.</p>
+</section>
+</section>
+<section id="id6">
+<h3><span class="section-number">2.1.3. </span>クォータニオン<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>式 <a class="reference internal" href="#equation-euler-eqs">(2.6)</a> は剛体と共に回転する座標系における成分の時間変化を示すため, ワールド座標系からみた運動へと変換する必要がある.
+変換方法には主に2つある.</p>
+<ul class="simple">
+<li><p>オイラー角</p></li>
+<li><p>クォータ二オン</p></li>
+</ul>
+<p>しかしながら, オイラー角はジンバルロックが生じる可能性があり, 例えば飛行機の宙返り運動などを再現する場合には
+計算が破綻する恐れがある. そこで本ソルバではクォータ二オン(quaternion, 四元数)を採用する.</p>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">2.2. </span>離散化<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<p>数値計算を行うために離散化を施す必要がある. 並進運動の場合について考える. 運動方程式を
+時間間隔 <span class="math notranslate nohighlight">\([t^{n} \: t^{n+1}]\:(t^{n}=n\Delta t,\;n=0,1,2,\dots)\)</span> で積分すると</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}M \int_{t^{n}}^{t^{n+1}} \dot{{\bf v}} dt &amp;= \int_{t^{n}}^{t^{n+1}} \left({\bf F} + M{\bf g}\right) dt \\
+\int_{t^{n}}^{t^{n+1}} \dot{{\bf r}} dt &amp;= \int_{t^{n}}^{t^{n+1}} {\bf v} dt\end{split}\]</div>
+<p>を得る.</p>
+<p>左辺の積分は次のようになる.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{t^{n}}^{t^{n+1}} \dot{{\bf v}} dt &amp;\simeq {\bf v}^{n+1} - {\bf v}^{n} \\
+\int_{t^{n}}^{t^{n+1}} \dot{{\bf r}} dt &amp;\simeq {\bf r}^{n+1} - {\bf r}^{n}\end{split}\]</div>
+<p>上付き文字はどの時間段階で評価するのかを表す.
+また右辺の評価については, 第一式は前進オイラー法, 第二式はクランク･ニコルソン法を適用する.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{t^{n}}^{t^{n+1}} \left({\bf F} + M{\bf g}\right) dt &amp;\simeq \left({\bf F} + M{\bf g}\right)^{n} \Delta t
+ = {\bf F}^{n} \Delta t + M{\bf g} \Delta t\\
+\int_{t^{n}}^{t^{n+1}} {\bf v} dt &amp;\simeq \frac{{\bf v}^{n} + {\bf v}^{n+1}}{2} \Delta t\end{split}\]</div>
+<p>これらを組み合わせて整理すると, 新しい時刻での位置と速度は次式で求められる.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\bf v}^{n+1} &amp;= {\bf v}^{n} + \frac{{\bf F}^{n}}{M} \Delta t + {\bf g}\Delta t \\
+{\bf x}^{n+1} &amp;= {\bf x}^{n} + \frac{{\bf v}^{n} + {\bf v}^{n+1}}{2} \Delta t\end{split}\]</div>
+</section>
+<section id="id8">
+<h2><span class="section-number">2.3. </span>実装<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<p>剛体の運動は <code class="docutils literal notranslate"><span class="pre">Rigidbody_t</span></code> クラスが受け持つ.</p>
+<section id="id9">
+<h3><span class="section-number">2.3.1. </span>事前準備<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>メンバ変数の <code class="docutils literal notranslate"><span class="pre">LocalGravity</span></code> で重力を指定する. 不要な場合は指定しない(デフォルトでゼロ).</p></li>
+<li><p>メンバ変数の <code class="docutils literal notranslate"><span class="pre">CenterOfMass</span></code> に初期重心座標を入力する.</p></li>
+<li><p>回転運動をする場合, <code class="docutils literal notranslate"><span class="pre">SetInertiaTensor</span></code> でグローバル座標系の慣性テンソルを入力する.</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3><span class="section-number">2.3.2. </span>並進運動<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>並進運動の場合は以下の流れに従う.</p>
+<ol class="arabic simple">
+<li><p>既知の流れ場において, 物体表面に働く流体力の合力 <span class="math notranslate nohighlight">\({\bf F}^{n}\)</span> を求める</p></li>
+<li><p>新しい時間段階での速度 <span class="math notranslate nohighlight">\({\bf v}^{n+1}\)</span> を求める.</p></li>
+<li><p>新しい重心の位置ベクトル <span class="math notranslate nohighlight">\({\bf r}_{G}^{n+1}\)</span> を求める.</p></li>
+</ol>
+<p>上記のうち2.と3.はまとめてメンバ関数 <code class="docutils literal notranslate"><span class="pre">update</span></code> が担う. 1.に関しては,
+<code class="docutils literal notranslate"><span class="pre">fluid.f90</span></code> 内のサブルーチン <code class="docutils literal notranslate"><span class="pre">calc_fluid_force_and_torque</span></code> により合力を求め,
+<code class="docutils literal notranslate"><span class="pre">Rigidbody_t</span></code> クラスのメンバ関数 <code class="docutils literal notranslate"><span class="pre">addForce</span></code> を呼び出してクラスに合力を登録する.</p>
+<p>なお格子を動かすのはユーザの役目である. 方法は主に2つ.</p>
+<ul class="simple">
+<li><p>1ステップ前の位置ベクトルをクラス外に記憶しておき, 新しく計算された位置との差分から変位を求める.</p></li>
+<li><p>物体の重心からの各点の相対ベクトルを記憶しておき, 新しい座標を重心の位置ベクトルとの和で計算する.</p></li>
+</ul>
+<p>上記2つは実質的に同じことをしている. 剛体中のある質点 <span class="math notranslate nohighlight">\(i\)</span> の座標を <span class="math notranslate nohighlight">\({\bf r}_{i}\)</span> とすると,
+剛体内の任意の2点間距離は運動の間変化しないから,
+<strong>回転を含まない運動</strong> に限っては重心から見た質点の相対ベクトル</p>
+<div class="math notranslate nohighlight">
+\[{\boldsymbol \rho}_i = {\bf r}_{i} - {\bf r}_{G}\]</div>
+<p>は時間によらず一定である. そのため, 剛体上の任意の格子点の <span class="math notranslate nohighlight">\(t=t^{n+1}\)</span> における新しい位置は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\bf r}_{i}^{n+1} &amp;= {\bf r}_{G}^{n+1} + \boldsymbol{\rho}_i \\
+&amp;= {\bf r}_{G}^{n+1} - {\bf r}_{G}^{n} + {\bf r}_{i}^{n} \\
+&amp;= \Delta {\bf r}_{G} + {\bf r}_{i}^{n}\end{split}\]</div>
+<p>と書ける. 第一式は後者にあたり, そこから前者が導かれる(第3式).</p>
+</section>
+<section id="id11">
+<h3><span class="section-number">2.3.3. </span>回転運動<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Rigidbody_t</span></code> クラスが保持するのは剛体の回転行列である. 物体を回転させるためにはこの回転行列を
+用いてユーザが処理を書かなければならない. 回転行列 <code class="docutils literal notranslate"><span class="pre">rotation</span></code> がクォータ二オンなので,
+ベクトルの回転は2通り有り得る.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rotation</span></code> を <code class="docutils literal notranslate"><span class="pre">ToRotationMatrix</span></code> で回転行列に変換する</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quaternion_t</span></code> のメソッド <code class="docutils literal notranslate"><span class="pre">rotate</span></code> を呼び出す.</p></li>
+</ul>
+<p>たぶん2つ目のやり方が確実. ただし <code class="docutils literal notranslate"><span class="pre">rotate</span></code> の引数に与えるベクトルは <strong>初期座標</strong> で無ければならない.</p>
+</section>
+</section>
+<section id="id12">
+<h2><span class="section-number">2.4. </span>参考<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>原島 鮮, 力学Ⅰ―質点･剛体の力学―</p></li>
+<li><p>三宅 敏恒, 入門線形代数</p></li>
+<li><p>J.L.Meriam, L.G.Kraige, J.N.Bolton, Engineering Mechanics Volume 2 Dynamics 8th edition, Wiley</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quaternion.html" class="btn btn-neutral float-left" title="1. クォータ二オン" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="backward_diff.html" class="btn btn-neutral float-right" title="3. 後退差分クラス" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. 勾配スキーム &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="5. 非圧縮流体の計算" href="incomp_simulator.html" />
+    <link rel="prev" title="3. 境界条件" href="boundary_condition.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. 勾配スキーム</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 速度勾配テンソル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. セル中心の勾配の計算法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gauss">4.2.1. Gauss勾配</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.2.2. 最小自乗法</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">4.3. プログラム</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>勾配スキーム</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/main/gradient_scheme.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">4. </span>勾配スキーム<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2><span class="section-number">4.1. </span>速度勾配テンソル<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>速度勾配テンソルは次式で表される．</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\nabla \boldsymbol{u} =
+\begin{bmatrix}
+    \frac{\partial u}{\partial x} &amp; \frac{\partial u}{\partial y} &amp; \frac{\partial u}{\partial z} \\
+    \frac{\partial v}{\partial x} &amp; \frac{\partial v}{\partial y} &amp; \frac{\partial v}{\partial z} \\
+    \frac{\partial w}{\partial x} &amp; \frac{\partial w}{\partial y} &amp; \frac{\partial w}{\partial z} \\
+\end{bmatrix}\end{split}\]</div>
+<p>全てのセルに対する速度勾配テンソルは, <cite>fluid.f90</cite> のクラス <cite>fluid_t</cite> のメンバ <cite>dvdr</cite> に格納される.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dvdr</span><span class="p">(:,:,:)</span><span class="w">   </span><span class="c">!&lt; 速度勾配。[[du/dx,dv/dx,dw/dx],[du/dy,dv/dy,dw/dy],[du/dz,dv/dz,dw/dz]]]</span>
+</pre></div>
+</div>
+<p>あるセル <cite>cell</cite> のx方向の速度成分 <span class="math notranslate nohighlight">\(u\)</span> の勾配 <span class="math notranslate nohighlight">\(\nabla u\)</span> は
+<cite>dvdr(1,1:3,cell)</cite> でアクセス出来る.</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">4.2. </span>セル中心の勾配の計算法<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>セル中心の速度勾配はいくつか方法がある. ここでは</p>
+<ul class="simple">
+<li><p>Gauss勾配</p></li>
+<li><p>最小自乗法</p></li>
+</ul>
+<p>について説明する.</p>
+<section id="gauss">
+<h3><span class="section-number">4.2.1. </span>Gauss勾配<a class="headerlink" href="#gauss" title="Link to this heading"></a></h3>
+<p>Gauss勾配は次のように計算する. 速度成分 <span class="math notranslate nohighlight">\(u\)</span> について,</p>
+<div class="math notranslate nohighlight">
+\[\nabla u (\boldsymbol{x}_{C}) \simeq \frac{1}{V_{C}}\sum_{f\sim nb(C)} (\boldsymbol{n}\cdot u S)_{f}\]</div>
+<p>ここで, <span class="math notranslate nohighlight">\(f\sim nb(C)\)</span> はセルCの各面fについて, という意味である. また, <span class="math notranslate nohighlight">\(\boldsymbol{n}\)</span> は
+面の外向き法線ベクトルで, <span class="math notranslate nohighlight">\(S\)</span> は面の面積である.</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">4.2.2. </span>最小自乗法<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="id5">
+<h2><span class="section-number">4.3. </span>プログラム<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<p>Gauss勾配は <cite>fluid.f90</cite> の <cite>calc_gradient</cite> で提供される.
+注意点として, 出力される勾配は <strong>転置されている</strong> . つまり</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}(\nabla \boldsymbol{u})^{T} =
+\begin{bmatrix}
+    \frac{\partial u}{\partial x} &amp; \frac{\partial v}{\partial x} &amp; \frac{\partial w}{\partial x} \\
+    \frac{\partial u}{\partial y} &amp; \frac{\partial v}{\partial y} &amp; \frac{\partial w}{\partial y} \\
+    \frac{\partial u}{\partial z} &amp; \frac{\partial v}{\partial z} &amp; \frac{\partial w}{\partial z} \\
+\end{bmatrix}\end{split}\]</div>
+<p>が出力される.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c">!&gt; @brief ガウスの発散定理により、セル値の勾配を求める。転置版。</span>
+<span class="c">!! @param[in] q</span>
+<span class="c">!! @param[in] cell_volumes</span>
+<span class="c">!! @param[in] face_normals</span>
+<span class="c">!! @param[in] face_areas</span>
+<span class="c">!! @param[in] face2cell</span>
+<span class="c">!! @param[in] cell_offsets</span>
+<span class="c">!! @param[in] cell_faces</span>
+<span class="c">!! @param[in] cell_count セル数。仮想セルを含まない。</span>
+<span class="c">!! @param[in] eval_mode 面の値の評価。0: half, 1: linear.</span>
+<span class="c">!! @param[out] grad_q      (1,:,i):dq/dx, (2,:,i):dq/dy, (3,:,i):dqdz</span>
+<span class="k">subroutine </span><span class="n">calc_gradient</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">cell_volumes</span><span class="p">,</span><span class="w"> </span><span class="n">face_normals</span><span class="p">,</span><span class="w"> </span><span class="n">face_areas</span><span class="p">,</span><span class="w"> </span><span class="n">face_cell_distances</span><span class="p">,</span><span class="w"> </span><span class="n">face2cell</span><span class="p">,</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">,</span><span class="w"> </span><span class="n">cell_faces</span><span class="p">,</span><span class="w"> </span><span class="n">cell_count</span><span class="p">,</span><span class="w"> </span><span class="n">eval_mode</span><span class="p">,</span><span class="w"> </span><span class="n">grad_q</span><span class="p">)</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">q</span><span class="p">(:,:),</span><span class="w"> </span><span class="n">cell_volumes</span><span class="p">(:),</span><span class="w"> </span><span class="n">face_normals</span><span class="p">(:,:),</span><span class="w"> </span><span class="n">face_areas</span><span class="p">(:),</span><span class="w"> </span><span class="n">face_cell_distances</span><span class="p">(:,:)</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face2cell</span><span class="p">(:,:),</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(:),</span><span class="w"> </span><span class="n">cell_faces</span><span class="p">(:),</span><span class="w"> </span><span class="n">cell_count</span><span class="p">,</span><span class="w"> </span><span class="n">eval_mode</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grad_q</span><span class="p">(:,:,:)</span>
+
+<span class="w">    </span><span class="kt">integer </span><span class="n">cell</span><span class="p">,</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">face</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">)</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">ivol</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">q_ik</span><span class="p">,</span><span class="w"> </span><span class="n">dqdx</span><span class="p">,</span><span class="w"> </span><span class="n">dqdy</span><span class="p">,</span><span class="w"> </span><span class="n">dqdz</span>
+
+<span class="w">    </span><span class="c">!$omp parallel do private(cells, face, n, q_ik, dqdx, dqdy, dqdz, ivol)</span>
+<span class="w">    </span><span class="k">do </span><span class="n">cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">cell_count</span>
+
+<span class="w">        </span><span class="c">! 追加・削除に伴い追加。</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cell_volumes</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">grad_q</span><span class="p">(:,:,</span><span class="n">cell</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">            </span><span class="k">cycle</span>
+<span class="k">        end if</span>
+
+<span class="k">        </span><span class="n">dqdx</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="n">dqdy</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="n">dqdz</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="w">        </span><span class="k">do </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="p">),</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">            </span><span class="n">face</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">cell_faces</span><span class="p">(</span><span class="n">offset</span><span class="p">))</span>
+<span class="w">            </span><span class="n">n</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">face_normals</span><span class="p">(:,</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">face_areas</span><span class="p">(</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nb">sign</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">cell_faces</span><span class="p">(</span><span class="n">offset</span><span class="p">))</span>
+<span class="w">            </span><span class="n">cells</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">face2cell</span><span class="p">(:,</span><span class="n">face</span><span class="p">)</span>
+
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eval_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">FaceEvalHalf</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">                </span><span class="n">q_ik</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="p">(:,</span><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">(:,</span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="k">                </span><span class="n">q_ik</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">face_cell_distances</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">q</span><span class="p">(:,</span><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">face_cell_distances</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">q</span><span class="p">(:,</span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">                    </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">face_cell_distances</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">face_cell_distances</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">face</span><span class="p">))</span>
+<span class="w">            </span><span class="k">end if</span>
+
+<span class="k">            </span><span class="n">dqdx</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">dqdx</span><span class="p">(:)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q_ik</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">            </span><span class="n">dqdy</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">dqdy</span><span class="p">(:)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q_ik</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">            </span><span class="n">dqdz</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">dqdz</span><span class="p">(:)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q_ik</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end do</span>
+
+<span class="k">        </span><span class="n">ivol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">cell_volumes</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+<span class="w">        </span><span class="n">grad_q</span><span class="p">(</span><span class="mi">1</span><span class="p">,:,</span><span class="n">cell</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">dqdx</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ivol</span>
+<span class="w">        </span><span class="n">grad_q</span><span class="p">(</span><span class="mi">2</span><span class="p">,:,</span><span class="n">cell</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">dqdy</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ivol</span>
+<span class="w">        </span><span class="n">grad_q</span><span class="p">(</span><span class="mi">3</span><span class="p">,:,</span><span class="n">cell</span><span class="p">)</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">dqdz</span><span class="p">(:)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ivol</span>
+<span class="w">    </span><span class="k">end do</span>
+
+
+<span class="k">end subroutine</span>
+</pre></div>
+</div>
+<p>最小自乗法はver.1.1の時点では用意されていない.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="boundary_condition.html" class="btn btn-neutral float-left" title="3. 境界条件" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="incomp_simulator.html" class="btn btn-neutral float-right" title="5. 非圧縮流体の計算" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

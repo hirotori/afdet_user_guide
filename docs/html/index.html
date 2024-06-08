@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to afdet solver&#39;s user guide! &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="1. インストールに必要なもの" href="howtoinstall.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main/fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to afdet solver's user guide!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-afdet-solver-s-user-guide">
+<h1>Welcome to afdet solver's user guide!<a class="headerlink" href="#welcome-to-afdet-solver-s-user-guide" title="Link to this heading"></a></h1>
+<p>afdet solver は 非構造移動格子有限体積法のためのフレームワークです.</p>
+<p>本ソルバは流体計算の実行プログラムと, それを構成するためのライブラリを
+ユーザに提供しています. ユーザはあらかじめ用意された機能拡張用クラスを用いて計算の前処理や毎ループ後の後処理,
+境界条件やデータ書き出し処理などを独自にカスタマイズすることが出来るため, 過去の計算プログラムと比べて比較的柔軟かつ
+安全に独自の機能を盛り込むことが出来る. また拡張クラスと補助サブルーチンの作成に当たって,
+ユーザは <code class="docutils literal notranslate"><span class="pre">lib\common,</span> <span class="pre">lib\common2</span></code> 内のライブラリ群のサポートを受けることが出来るため,
+これらのライブラリを上手に組み合わせて効率よく開発を進めることが出来るのも特徴のひとつである.</p>
+<p>このユーザガイドは, ソルバの基本的な使い方や用語の解説を行い,
+ユーザの開発を支援することを目的としています.</p>
+<p>このユーザガイドの著者は T.I.です. 協力者を募集しています．</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>本ユーザガイドは非圧縮性流体計算用フレームワーク <code class="docutils literal notranslate"><span class="pre">afdetFractional</span></code> の内容を基にしています．
+圧縮性流体用のフレームワークとは若干違うかもしれません．またバージョン <code class="docutils literal notranslate"><span class="pre">1.0.8</span></code> ~ <code class="docutils literal notranslate"><span class="pre">1.2.0</span></code> に基づいた記述なので，
+アップデートによってはAPIが変更される可能性もあります. ここにかかれているプログラムの実装内容は参考程度にとどめておいてください.
+フレームワークの作成者は本ガイドの著者とは異なるので，プログラムの詳しい内容については作成者本人と連絡を取ってください．</p>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html">1. インストールに必要なもの</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtoinstall.html#pc">1.1. PC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtoinstall.html#id2">1.2. コンパイラ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtoinstall.html#id3">1.3. ビルドツール</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="howtocalc.html">3. 計算プログラムの実行方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="howtocalc.html#id2">3.1. サンプルケースの実行</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtocalc.html#id4">3.2. 可視化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howtocalc.html#id5">3.3. リスタート</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="main/fvm_mesh_data.html">1. メッシュデータ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main/fvm_mesh_data.html#cell">1.1. セル(cell)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/fvm_mesh_data.html#face">1.2. 面(face)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/fvm_mesh_data.html#node-point">1.3. 節点(node,point)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/fvm_mesh_data.html#id3">1.4. 本プログラムのデータ構造</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/fvm_mesh_data.html#id13">1.5. その他</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main/geometry.html">2. 幾何量の計算</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main/geometry.html#id2">2.1. 面の表面積と重心</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/geometry.html#id6">2.2. セルの体積と重心</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/geometry.html#id10">2.3. その他</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main/boundary_condition.html">3. 境界条件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main/boundary_condition.html#id2">3.1. 理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/boundary_condition.html#id3">3.2. 種類</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/boundary_condition.html#poisson">3.3. Poisson方程式への境界条件の組み込み</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/boundary_condition.html#id11">3.4. 実装と使い方</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main/gradient_scheme.html">4. 勾配スキーム</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main/gradient_scheme.html#id2">4.1. 速度勾配テンソル</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/gradient_scheme.html#id3">4.2. セル中心の勾配の計算法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/gradient_scheme.html#id5">4.3. プログラム</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main/incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="libs/quaternion.html">1. クォータ二オン</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libs/quaternion.html#id2">1.1. 定義</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/quaternion.html#id3">1.2. 基本的な演算</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/quaternion.html#id9">1.3. ベクトルの回転</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/quaternion.html#slerp">1.4. 球面補間(Slerp)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/quaternion.html#id12">1.5. 参考</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="libs/rigidbody.html">2. 剛体の運動(弱連成)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libs/rigidbody.html#id2">2.1. 理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/rigidbody.html#id7">2.2. 離散化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/rigidbody.html#id8">2.3. 実装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/rigidbody.html#id12">2.4. 参考</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="libs/backward_diff.html">3. 後退差分クラス</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libs/backward_diff.html#id2">3.1. 目的</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/backward_diff.html#id3">3.2. 理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/backward_diff.html#id7">3.3. 実装</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="libs/springmesh.html">4. バネ格子</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id2">4.1. 概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id3">4.2. 格子の代数的な変形法(1自由度)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id5">4.3. バネ格子法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id12">4.4. ねじりバネの方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id14">4.5. 半ねじりバネの方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#id17">4.6. ソルバでの取り扱い</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libs/springmesh.html#references">4.7. References</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom/setup_boundary_zone.html#id2">1.1. 表面メッシュの作成</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom/setup_boundary_zone.html#id3">1.2. ファイルの指定</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom/makeBC.html">2. 境界条件の作成例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom/makeBC.html#id2">2.1. 放物線分布の流入条件</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom/plugin_case.html">3. ユーザーカスタマイズの方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom/plugin_case.html#id2">3.1. 計算の手続きの分類</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom/plugin_case.html#id3">3.2. オーバーライド可能なメンバ関数</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom/use_intel_mkl.html#id1">4.1. 概要</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom/use_intel_mkl.html#id2">4.2. 手順</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">検索ページ</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="howtoinstall.html" class="btn btn-neutral float-right" title="1. インストールに必要なもの" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

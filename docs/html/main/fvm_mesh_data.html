@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1. メッシュデータ &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="2. 幾何量の計算" href="geometry.html" />
+    <link rel="prev" title="3. 計算プログラムの実行方法" href="../howtocalc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. メッシュデータ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cell">1.1. セル(cell)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">1.1.1. セルの形状</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inner-cell">1.1.2. 内部セル(inner cell)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boundary-cell">1.1.3. 境界セル(boundary cell)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-cell-dummy-cell">1.1.4. ゴーストセル(ghost cell)または仮想セル(dummy cell)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#face">1.2. 面(face)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#node-point">1.3. 節点(node,point)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">1.4. 本プログラムのデータ構造</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">1.4.1. データを扱うクラス</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">1.4.2. データのアクセス方法</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">1.4.2.1. セルから面へ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">1.4.2.2. セルから隣接セルへ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">1.4.2.3. 面からセルへ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">1.4.2.4. 面から節点へ</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">1.4.2.5. 境界面</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">1.4.2.6. 節点からセルへ</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">1.5. その他</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boundary_condition.html">3. 境界条件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1. </span>メッシュデータ</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/main/fvm_mesh_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">1. </span>メッシュデータ<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>本ソルバは非構造格子を取り扱う. 構造格子と異なり, 非構造格子では格子点やセルの番号付けに
+規則性がない. そのため, ある格子の <strong>隣接関係</strong> (connectivity)は解析を行う前に配列として
+用意しなければならない.</p>
+<p>ここでは本ソルバで用いられるメッシュとそのデータを取り扱うクラス <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> について説明する.</p>
+<section id="cell">
+<h2><span class="section-number">1.1. </span>セル(cell)<a class="headerlink" href="#cell" title="Link to this heading"></a></h2>
+<p>物理量を定義する図形を <strong>セル</strong> (cell)あるいは <strong>要素</strong> (element)と呼ぶ.
+本ソルバは3次元流れ場のためのプログラムで, セル中心型の有限体積法を採用しているので,
+物理量は3次元立体の重心に定義され, また <strong>検査体積</strong> (control volume)は領域内の各3次元立体にとられる.</p>
+<section id="id2">
+<h3><span class="section-number">1.1.1. </span>セルの形状<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<figure class="align-default" id="id14">
+<img alt="../_images/cell_types.png" src="../_images/cell_types.png" />
+<figcaption>
+<p><span class="caption-number">図 1.1 </span><span class="caption-text">利用可能なセル形状.</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>本ソルバでは以下の4種類のセルが使用出来る.</p>
+<ul class="simple">
+<li><p>四面体(tetrahedron)</p></li>
+<li><p>プリズム(wedge)</p></li>
+<li><p>ピラミッド(pyramid)</p></li>
+<li><p>六面体(hexahedron)</p></li>
+</ul>
+<p>セルは複数枚の <strong>面</strong> (face)で構成される. 面は複数の <strong>節点</strong> (node)で構成される.
+各セルが持つ節点および面の個数は下表の通りである.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>cell type</p></th>
+<th class="head"><p>node</p></th>
+<th class="head"><p>face</p></th>
+<th class="head"><p>face type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>tetrahedron</p></td>
+<td><p>4</p></td>
+<td><p>4</p></td>
+<td><p>triangle</p></td>
+</tr>
+<tr class="row-odd"><td><p>wedge</p></td>
+<td><p>6</p></td>
+<td><p>5</p></td>
+<td><p>triangle &amp; quadlilateral</p></td>
+</tr>
+<tr class="row-even"><td><p>pyramid</p></td>
+<td><p>5</p></td>
+<td><p>5</p></td>
+<td><p>triangle &amp; quadlilateral</p></td>
+</tr>
+<tr class="row-odd"><td><p>hexahedron</p></td>
+<td><p>8</p></td>
+<td><p>6</p></td>
+<td><p>quadlilateral</p></td>
+</tr>
+</tbody>
+</table>
+<p>下図に2次元メッシュにおけるセル,面,節点の関係を示す.</p>
+<figure class="align-default" id="id15">
+<img alt="../_images/cell_face_node.png" src="../_images/cell_face_node.png" />
+<figcaption>
+<p><span class="caption-number">図 1.2 </span><span class="caption-text">セル,面,節点の関係</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>セルにはいくつかの種類がある.  計算領域内に存在するものを <strong>内部セル</strong> (inner cell) あるいは単にセルとよぶ ( <a class="reference internal" href="#fig-bnd-and-inner-cells"><span class="std std-numref">図 1.3</span></a> 参照).
+それとは異なり, 計算領域の境界より外側に一層だけ, 仮想的にセルを割り当てており,
+これを <strong>ゴーストセル</strong> あるいは <strong>仮想セル</strong> (ghost cell, dummy cell) と呼ぶ.
+内部セルとは異なり可視化時には現れず, 計算上の都合で割り当てられるためにこう呼ぶ. 仮想セルを設けることで, 境界面に隣接するセルを内部セルと同じ離散式で取り扱うことが出来る.
+詳しくは <a class="reference internal" href="boundary_condition.html"><span class="doc">境界条件</span></a> を参照.</p>
+<figure class="align-default" id="fig-bnd-and-inner-cells">
+<img alt="../_images/bnd_and_inner_cells.png" src="../_images/bnd_and_inner_cells.png" />
+<figcaption>
+<p><span class="caption-number">図 1.3 </span><span class="caption-text">境界セル(図中灰色)と内部セル(白).</span><a class="headerlink" href="#fig-bnd-and-inner-cells" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>なおセルには番号が付けられている. <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">~</span> <span class="pre">cell_count</span></code> が計算領域内部に存在するセル(inner cell),
+<code class="docutils literal notranslate"><span class="pre">cell_count</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">~</span> <span class="pre">cell_count2</span></code> が計算境界の外側に設けられた仮想セル(ghost cell) である.
+<code class="docutils literal notranslate"><span class="pre">cell_count</span></code> は内部セルの個数を表しており, <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメソッドから取得する.</p>
+</section>
+<section id="inner-cell">
+<h3><span class="section-number">1.1.2. </span>内部セル(inner cell)<a class="headerlink" href="#inner-cell" title="Link to this heading"></a></h3>
+<p><a class="reference internal" href="#fig-bnd-and-inner-cells"><span class="std std-numref">図 1.3</span></a> の白いセルが該当する.</p>
+<p>計算領域中のセルの内, 境界に接していないセルを任意に1つとると, そのセルは自身の持つ面それぞれに
+1つ隣接するほかのセルを持つ. したがって隣接するセルの個数は面の個数に一致する.</p>
+<p>例外は1つの四角形面を三角形に分割する場合である. このとき, 2つの面が同一のセルと
+隣接するので, 個数は一致しない.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>現バージョンでは三角形分割はされていない.
+どうしても三角形分割が必要な場合は, <code class="docutils literal notranslate"><span class="pre">grid.f90</span></code> 内のマクロ変数 <code class="docutils literal notranslate"><span class="pre">TRIANGULATE_FACE</span></code> を
+1に変更し, 再度コンパイルを実施する.</p>
+</div>
+</section>
+<section id="boundary-cell">
+<h3><span class="section-number">1.1.3. </span>境界セル(boundary cell)<a class="headerlink" href="#boundary-cell" title="Link to this heading"></a></h3>
+<p><a class="reference internal" href="#fig-bnd-and-inner-cells"><span class="std std-numref">図 1.3</span></a> の灰色のセルが該当する.</p>
+<p>内部セルに含まれるが, セルのある面が計算領域の <strong>境界</strong> (boundary,boundary surface)と接しているものは特別に <strong>境界セル</strong> (boundary cell)と呼ぶ.
+境界セルの面のうち少なくともひとつは
+ほかのセルと隣接しない. このような面を <strong>境界面</strong> (boundary face)とよぶ.
+ただし, 境界条件の設定を簡単にするため本ソルバは境界面を挟んだ外側に仮想的なセルを一層設けている.
+そのため, 境界面も実際には隣接するセルを持つ. このような仮想的なセルを仮想セル(ghost cell)と呼ぶ.</p>
+</section>
+<section id="ghost-cell-dummy-cell">
+<h3><span class="section-number">1.1.4. </span>ゴーストセル(ghost cell)または仮想セル(dummy cell)<a class="headerlink" href="#ghost-cell-dummy-cell" title="Link to this heading"></a></h3>
+<p>境界の一層外側に設けられたセルのことで, 境界条件を簡単に実装するために用意されている.
+仮想セルにも物理量は定義されるが, 境界面の値と,それに対応する境界セルの値から境界条件に応じて決定される.
+詳細は <a class="reference internal" href="boundary_condition.html"><span class="doc">境界条件</span></a> を参照.
+なお仮想セルは, <a class="reference internal" href="#fig-boundary-and-ghost-cells"><span class="std std-numref">図 1.4</span></a> のように, 境界セルが境界面を挟んで対象となる位置に配置される.</p>
+<figure class="align-default" id="fig-boundary-and-ghost-cells">
+<img alt="../_images/boundary_and_ghost_cells.png" src="../_images/boundary_and_ghost_cells.png" />
+<figcaption>
+<p><span class="caption-number">図 1.4 </span><span class="caption-text">ゴーストセルは境界面を挟んで鏡面対象となる位置に配置される.</span><a class="headerlink" href="#fig-boundary-and-ghost-cells" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="face">
+<h2><span class="section-number">1.2. </span>面(face)<a class="headerlink" href="#face" title="Link to this heading"></a></h2>
+<p>セルを構成する多角形. セルにねじれが生じる場合は平面図形ではないが, そのようなことは稀なので
+平面図形と見なして処理される.</p>
+<p>セル毎に面を数えると重複するので, 重複の無いように1つずつ別個に番号付けされている.
+境界面以外の面は全て <strong>内部面</strong> (inner face) あるいは単に面 と呼ぶ. 面は方向も含めて定義されている.
+これはつまり, セルから面を見たとき, 面の向きは必ずしもセルの外向きとは限らないことを意味する.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>面の向きについて</p>
+<p>面の向きは, それを挟む2つのセル番号 c1, c2について,
+番号が小さい方から大きい方へ (c1 &lt; c2) 向くように設定されている.
+面の向きの計算は <a class="reference internal" href="geometry.html"><span class="doc">幾何量の計算</span></a> を参照.</p>
+</div>
+<p>内部面に対して, 計算領域の境界表面(boundary surface)に接する面を <strong>境界面</strong> (boundary face)と呼ぶ.</p>
+</section>
+<section id="node-point">
+<h2><span class="section-number">1.3. </span>節点(node,point)<a class="headerlink" href="#node-point" title="Link to this heading"></a></h2>
+<p>文字通りの座標点. それぞれが座標成分を持つ. 節点は面を構成する.
+本ソルバはセル中心型なので,物理量は節点では無くセルの重心に定義される ( <a class="reference internal" href="geometry.html#id4"><span class="std std-ref">重心の計算</span></a> 参照).</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">1.4. </span>本プログラムのデータ構造<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>本ソルバは非構造格子(unstructured mesh)を採用しているため, セル,面,節点番号は構造格子と異なり
+不規則に並んでいる. そのため, 接続関係などのテーブルを別途配列として保持する必要がある.
+接続関係の構築や定義は, おおよそ以下のソースファイルを辿れば理解出来る.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unstructured_mesh.f90</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grid.f90</span></code></p></li>
+</ul>
+<p>ここではデータ構造の構築方法には触れず, 構築されたデータをどのように扱うかについて焦点をあてる.</p>
+<section id="id4">
+<h3><span class="section-number">1.4.1. </span>データを扱うクラス<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>非構造格子の接続関係,幾何量などのデータは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスが受け持つ. データ構造に関するものとして,
+例を挙げると</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_offsets</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_faces</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">face2cell</span></code></p></li>
+</ul>
+<p>などがある. これらは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバである(ただしカプセル化はされていない.).</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.4.2. </span>データのアクセス方法<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<section id="id6">
+<h4><span class="section-number">1.4.2.1. </span>セルから面へ<a class="headerlink" href="#id6" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">cell_offsets</span></code> と <code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> を用いてアクセスする.
+<code class="docutils literal notranslate"><span class="pre">cell_offsets</span></code> は <code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> の開始オフセットである. つまり,
+あるセルの面へアクセスするためには, 配列 <code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> の <code class="docutils literal notranslate"><span class="pre">cell_offsets(cell)</span></code> 番目からの値を見れば良い.</p>
+<figure class="align-default" id="id16">
+<img alt="../_images/cell2face.png" src="../_images/cell2face.png" />
+<figcaption>
+<p><span class="caption-number">図 1.5 </span><span class="caption-text">セルから面へアクセスする. セルから見て法線が内向きの場合, <code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> は負値をとる.
+図の右下がデータ構造のイメージである. 配列 <code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> を <code class="docutils literal notranslate"><span class="pre">cell_offsets(cell)</span></code> 番目(赤字)
+から <code class="docutils literal notranslate"><span class="pre">cell_offsets(cell+1)-1</span></code> 番目までアクセスして(図中青枠)面番号を取得する.</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>アクセスの例:</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">do </span><span class="n">cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">cell_count</span>
+<span class="k">do </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="p">),</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">    </span><span class="n">face</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">cell_faces</span><span class="p">(</span><span class="n">offset</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c">!いろいろやる</span>
+
+<span class="k">end do</span>
+<span class="k">end do</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h4><span class="section-number">1.4.2.2. </span>セルから隣接セルへ<a class="headerlink" href="#id7" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">cell_faces</span></code> はセルから見て面の法線が外向きなら正値, 逆なら負値をとる. それを利用して隣接セル番号を取得出来る.</p>
+<p>以下に一例を示す.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">do </span><span class="n">cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">cell_count</span>
+<span class="k">do </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="p">),</span><span class="w"> </span><span class="n">cell_offsets</span><span class="p">(</span><span class="n">cell</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">    </span><span class="n">face</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">cell_faces</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c">!cell_faces &lt; 0 なら face2cell(1,face),</span>
+<span class="w">    </span><span class="c">!cell_faces &gt; 0 なら face2cell(2,face)</span>
+<span class="w">    </span><span class="n">nbcell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">face2cell</span><span class="p">((</span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">sign</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">face</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c">!いろいろやる</span>
+
+<span class="k">end do</span>
+<span class="k">end do</span>
+</pre></div>
+</div>
+<p>あるいは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> のメソッド <code class="docutils literal notranslate"><span class="pre">cell_next_cell</span></code> を利用する. これは <code class="docutils literal notranslate"><span class="pre">elemental</span></code> 属性なので,
+引数 <code class="docutils literal notranslate"><span class="pre">side</span></code> に配列( <code class="docutils literal notranslate"><span class="pre">[i,</span> <span class="pre">i</span> <span class="pre">=</span> <span class="pre">cell_offsets(cell),</span> <span class="pre">cell_offsets(cell+1)-1]</span></code> )を渡せばまとめて隣接セルを
+取得出来る.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">pure elemental </span><span class="kt">integer </span><span class="k">function </span><span class="n">cell_next_cell</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">cell</span><span class="p">,</span><span class="w"> </span><span class="n">side</span><span class="p">)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">grid_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cell</span><span class="p">,</span><span class="w"> </span><span class="n">side</span>
+<span class="w">    </span><span class="kt">integer </span><span class="n">face</span>
+<span class="w">    </span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">face_next_cell</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">cell</span><span class="p">,</span><span class="w"> </span><span class="n">side</span><span class="p">)</span>
+<span class="w">    </span><span class="n">cell_next_cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">face2cell</span><span class="p">((</span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">sign</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">face</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
+<span class="k">end function</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<span id="id9"></span><h4><span class="section-number">1.4.2.3. </span>面からセルへ<a class="headerlink" href="#id8" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">face2cell(1:2,face)</span></code> をつかう. 境界面に対しては <code class="docutils literal notranslate"><span class="pre">face2cell(2,face)</span></code> がゴーストセルを指す.
+イメージを以下の図に示す.</p>
+<figure class="align-default" id="id17">
+<img alt="../_images/face_cell_connectivity.png" src="../_images/face_cell_connectivity.png" />
+<figcaption>
+<p><span class="caption-number">図 1.6 </span><span class="caption-text">面からセルへのアクセスの概念図.</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><code class="docutils literal notranslate"><span class="pre">face2cell(1,face)</span> <span class="pre">&lt;</span> <span class="pre">face2cell(2,face)</span></code> となるように定められている. ただし, あくまで面を挟む2つのセルに対する
+アドレスであって, その面がどちらのセルに属するかについてはわからない.
+面の向きについては, セルから面へのアクセスを用いる.</p>
+</div>
+</section>
+<section id="id10">
+<h4><span class="section-number">1.4.2.4. </span>面から節点へ<a class="headerlink" href="#id10" title="Link to this heading"></a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">face2vertex(nv,face)</span></code> を用いる. 第1引数は節点のローカル番号で, 有効範囲は <code class="docutils literal notranslate"><span class="pre">nv</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">face_vert_counts(face)</span></code> .</p>
+</section>
+<section id="id11">
+<h4><span class="section-number">1.4.2.5. </span>境界面<a class="headerlink" href="#id11" title="Link to this heading"></a></h4>
+<p>境界面だけにアクセスするための配列が用意されている. 境界条件を適用させる領域を境界ゾーン(boundary zone)と呼ぶ
+(<a class="reference internal" href="#fig-zone-and-boundary-faces"><span class="std std-numref">図 1.7</span></a>) ことにすると,
+各ゾーン番号に対する境界面は以下のようにアクセス出来る.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">do </span><span class="n">zone</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">zone_count</span>
+<span class="w">    </span><span class="k">do </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boundary_offsets</span><span class="p">(</span><span class="n">zone</span><span class="p">),</span><span class="w"> </span><span class="n">boundary_offsets</span><span class="p">(</span><span class="n">zone</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boundary_faces</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!いろいろやる</span>
+<span class="w">    </span><span class="k">end do</span>
+<span class="k">end do</span>
+</pre></div>
+</div>
+<figure class="align-default" id="fig-zone-and-boundary-faces">
+<img alt="../_images/zone_and_boundary_faces.png" src="../_images/zone_and_boundary_faces.png" />
+<figcaption>
+<p><span class="caption-number">図 1.7 </span><span class="caption-text">円柱周りの流れにおける境界ゾーンの定義の例.</span><a class="headerlink" href="#fig-zone-and-boundary-faces" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>ここで <code class="docutils literal notranslate"><span class="pre">zone</span></code> は境界ゾーンの番号である. 番号の指定については X を参照.
+<code class="docutils literal notranslate"><span class="pre">boundary_offsets</span></code> は <code class="docutils literal notranslate"><span class="pre">cell_offsets</span></code> と同様に,
+指定した <code class="docutils literal notranslate"><span class="pre">zone</span></code> の境界面 <code class="docutils literal notranslate"><span class="pre">boundary_faces</span></code> にアクセスするための
+オフセット配列である. 例を以下に示す.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">boundary_faces</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="mi">678</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
+                  <span class="o">^</span>           <span class="o">^</span>
+                  <span class="o">|</span>           <span class="o">|</span>
+                  <span class="mi">1</span>          <span class="mi">100</span>
+<span class="n">boundary_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">302</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">boundary_offsets</span></code> は各ゾーンの <code class="docutils literal notranslate"><span class="pre">boundary_faces</span></code> の開始インデックスである.
+<code class="docutils literal notranslate"><span class="pre">zone</span> <span class="pre">=</span> <span class="pre">1</span></code> の場合は, <code class="docutils literal notranslate"><span class="pre">boundary_faces(1:101-1)</span></code> がそのゾーンに属する境界面となる.</p>
+</section>
+<section id="id12">
+<h4><span class="section-number">1.4.2.6. </span>節点からセルへ<a class="headerlink" href="#id12" title="Link to this heading"></a></h4>
+<p>基本的にはセルから面へのアクセスと同じだが, 範囲は <code class="docutils literal notranslate"><span class="pre">vertex_cell_bounds(2,vert)</span></code> であることに注意.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">do </span><span class="n">vert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">vert_count</span>
+<span class="w">    </span><span class="k">do </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex_cell_bounds</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">vert</span><span class="p">),</span><span class="w"> </span><span class="n">vertex_cell_bounds</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">vert</span><span class="p">)</span>
+<span class="w">        </span><span class="n">cell</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vertex_cells</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+<span class="w">        </span><span class="c">!いろいろやる</span>
+<span class="w">    </span><span class="k">end do</span>
+<span class="k">end do</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="id13">
+<h2><span class="section-number">1.5. </span>その他<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<p>慣れないうちは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> のメンバ関数を利用すると良い.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../howtocalc.html" class="btn btn-neutral float-left" title="3. 計算プログラムの実行方法" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="geometry.html" class="btn btn-neutral float-right" title="2. 幾何量の計算" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="ja" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3. 境界条件 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=7eb31ea3"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="next" title="4. 勾配スキーム" href="gradient_scheme.html" />
+    <link rel="prev" title="2. 幾何量の計算" href="geometry.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            afdet solver user guide
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">ソルバのインストールと計算の手順:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html">1. インストールに必要なもの</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtoinstall.html#id4">2. インストール手順</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../howtocalc.html">3. 計算プログラムの実行方法</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバの基本事項:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="fvm_mesh_data.html">1. メッシュデータ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">2. 幾何量の計算</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 境界条件</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 理論</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">3.2. 種類</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.2.1. 流入条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">3.2.2. 流出条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">3.2.3. 滑り無し壁条件</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">3.2.4. 滑り壁条件</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#poisson">3.3. Poisson方程式への境界条件の組み込み</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">3.3.1. 圧力固定</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">3.3.2. 圧力勾配ゼロ</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id11">3.4. 実装と使い方</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">3.4.1. 境界ゾーンクラス</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">3.4.2. 境界条件クラス</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">3.4.3. ゾーンとの対応付け</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">3.4.4. 境界条件の適用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gradient_scheme.html">4. 勾配スキーム</a></li>
+<li class="toctree-l1"><a class="reference internal" href="incomp_simulator.html">5. 非圧縮流体の計算</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../libs/quaternion.html">1. クォータ二オン</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/rigidbody.html">2. 剛体の運動(弱連成)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/backward_diff.html">3. 後退差分クラス</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libs/springmesh.html">4. バネ格子</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">afdet solver user guide</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>境界条件</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/main/boundary_condition.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">3. </span>境界条件<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>境界条件に関するクラスとその関係性, 実装について.</p>
+<section id="id2">
+<h2><span class="section-number">3.1. </span>理論<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>本ソルバでは, 境界条件に仮想セル(ゴーストセル, ダミーセル)を用いる (<a class="reference internal" href="fvm_mesh_data.html#fig-boundary-and-ghost-cells"><span class="std std-numref">図 1.4</span></a>).
+各種の境界条件は, ゴーストセルに外挿されることで反映される.</p>
+<p>ゴーストセルは, その中心が境界セルのセル中心と面を挟んで対称となるように設定される.
+境界セルとゴーストセルのセル中心座標をそれぞれ <span class="math notranslate nohighlight">\({\bf r}_{C}, {\bf r}_{G}\)</span> ,境界面の重心座標を
+<span class="math notranslate nohighlight">\({\bf r}_{f}\)</span> とおく. 境界面の物理量 <span class="math notranslate nohighlight">\(q_{f}\)</span> は次のような線形内挿により表現される.</p>
+<div class="math notranslate nohighlight" id="equation-eq-boundary-value-interpol">
+<span class="eqno">(3.1)<a class="headerlink" href="#equation-eq-boundary-value-interpol" title="Link to this equation"></a></span>\[ \begin{align}\begin{aligned}q_{f} = \frac{d_{fC}\cdot q_{G} + d_{Gf}\cdot q_{C}}{d_{fC}+d_{Gf}}\\\begin{split}d_{fC} &amp;= | \left({\bf r}_{C} - {\bf r}_{f} \right)\cdot {\bf n} | \\
+d_{Gf} &amp;= | \left({\bf r}_{f} - {\bf r}_{G} \right)\cdot {\bf n} | \\\end{split}\end{aligned}\end{align} \]</div>
+<p><span class="math notranslate nohighlight">\(d_{fC},d_{Gf}\)</span> はそれぞれ面-セル重心間の距離である (<a class="reference internal" href="geometry.html#id11"><span class="std std-ref">面-セル間距離</span></a> 参照.) .
+一方, 境界面の物理量が既知の時に, ゴーストセルの値を更新するためには上式を変形して</p>
+<div class="math notranslate nohighlight" id="equation-eq-ghost-value-extrapol">
+<span class="eqno">(3.2)<a class="headerlink" href="#equation-eq-ghost-value-extrapol" title="Link to this equation"></a></span>\[q_{G} = \frac{(d_{fC}+d_{Gf})q_{f} - d_{Gf}\cdot q_{C}}{d_{fC}}\]</div>
+<p>とする.
+固定値境界では基本的にこの内挿関係に従って境界値, ゴーストセルの値を決定する.
+<code class="docutils literal notranslate"><span class="pre">boundary_condition.f90</span></code> には境界面およびゴーストセルの値を決定する関数が用意されている.
+式 <a class="reference internal" href="#equation-eq-boundary-value-interpol">(3.1)</a> に基づいて境界値を決めるのが <code class="docutils literal notranslate"><span class="pre">calc_wall_value</span></code> .
+逆に式 <a class="reference internal" href="#equation-eq-ghost-value-extrapol">(3.2)</a> よりゴーストセルの値を求めるのが <code class="docutils literal notranslate"><span class="pre">calc_ghost_value</span></code> である.</p>
+</section>
+<section id="id3">
+<h2><span class="section-number">3.2. </span>種類<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>基本的な境界条件について見てみる. 境界面の速度を <span class="math notranslate nohighlight">\({\bf u}_{bnd.}\)</span> とおく.</p>
+<section id="id4">
+<h3><span class="section-number">3.2.1. </span>流入条件<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>一様流入条件の場合, <strong>セル境界面</strong> に流入速度を与える. つまり,</p>
+<div class="math notranslate nohighlight">
+\[{\bf u}_{bnd.} = {\bf u}_{in}\]</div>
+<p>したがってゴーストセルの値は</p>
+<div class="math notranslate nohighlight">
+\[{\bf u}_{G} = \frac{{\bf u}_{in}\cdot \left( d_{fC}+d_{Gf} \right) - {\bf u}_{C}\cdot d_{Gf}}{d_{fC}}\]</div>
+<p>で与えられる.</p>
+</section>
+<section id="id5">
+<h3><span class="section-number">3.2.2. </span>流出条件<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>勾配ゼロ規定の場合は次のように考える. 与えられる条件はある物理量の <strong>境界面に垂直な方向微分がゼロ</strong> という条件なので,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial q}{\partial n} = 0\]</div>
+<p>である. いま, セル中心間を結ぶベクトルと法線は平行なので, この方向微分は</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial q}{\partial n} \simeq \frac{q_{G}-q_{C}}{d_{CG}}\]</div>
+<p>と近似出来る. それゆえ, 2つを組み合わせると</p>
+<div class="math notranslate nohighlight">
+\[q_{G} = q_{C}\]</div>
+<p>なる式を得る. 速度の場合も同様に, 成分毎に考えればよいので,</p>
+<div class="math notranslate nohighlight">
+\[{\bf u}_{G} = {\bf u}_{C}\]</div>
+<p>を得る.
+なお, 自由流出入条件( <code class="docutils literal notranslate"><span class="pre">free_stream</span></code> )の場合, 流速の向きで流速規定と勾配ゼロ規定を切り替える.</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">3.2.3. </span>滑り無し壁条件<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>これは粘性流体の粘着条件であり, 適用する境界面 <span class="math notranslate nohighlight">\(\Gamma_{w}\)</span> 上の速度がその境界の移動速度 <span class="math notranslate nohighlight">\({\bf v}_{wall}\)</span> に等しいとして
+与える.</p>
+<div class="math notranslate nohighlight">
+\[{\bf u} = {\bf v}_{wall} \quad on \quad \Gamma_{w}\]</div>
+<p>したがって, 仮想セルの速度は 式 <a class="reference internal" href="#equation-eq-ghost-value-extrapol">(3.2)</a> より計算する.
+滑り無し条件は流入条件と同様に,境界の値を固定する条件である. 両者は壁が静止しているときは全く同じである.
+しかし, 壁が移動する場合は壁の移動速度に基づいて計算されるので, 両者はこの点で異なる.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>指摘したように, 滑り無し条件を与える壁が全く動かない場合は,
+滑り無し条件を与えても速度0の速度固定条件を与えても同じである.</p>
+</div>
+<p>なお, <span class="math notranslate nohighlight">\({\bf v}_{wall}\)</span> は境界面上の移動量から計算する. デフォルトは三次精度後退差分である.
+詳細は <a class="reference internal" href="../libs/backward_diff.html"><span class="doc">後退差分クラス</span></a> を参照.</p>
+</section>
+<section id="id7">
+<h3><span class="section-number">3.2.4. </span>滑り壁条件<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>滑り条件では流体が壁面を滑る. したがって, 壁面に摩擦応力は発生しない. また, 流体粒子は壁面に沿って滑ることは出来るが,
+壁面を貫通することは出来ないので, 流体の壁面に垂直な方向の速度成分は壁の移動速度の法線方向成分と一致しなければならない <a class="footnote-reference brackets" href="#id16" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> .
+壁面の移動速度を <span class="math notranslate nohighlight">\({\bf v}_{wall}\)</span> , 壁の単位接線ベクトルを <span class="math notranslate nohighlight">\({\bf t}\)</span> とおくと,
+壁面上の流体の法線方向速度成分は</p>
+<div class="math notranslate nohighlight">
+\[(u_{bnd.})_{n}={\bf u}_{bnd}\cdot {\bf n} = {\bf v}_{wall}\cdot {\bf n}\]</div>
+<p>また, 接線方向速度は壁から第1点のセル速度を参照して,</p>
+<div class="math notranslate nohighlight">
+\[(u_{bnd.})_{t}{\bf t} = {\bf u}_{bnd}\cdot {\bf t} = {\bf u}_{C} - ({\bf u}_{C} \cdot {\bf n}){\bf n}\]</div>
+<p>とする. よって, 境界面の速度は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}{\bf u}_{bnd.} &amp;= (u_{bnd.})_{n}{\bf n} + (u_{bnd.})_{t}{\bf t} \\
+&amp;= {\bf u}_{C} + \left\{ ({\bf v}_{wall} - {\bf u}_{C})\cdot {\bf n} \right\} {\bf n}\end{split}\]</div>
+<p>である.</p>
+<figure class="align-default" id="id17">
+<img alt="../_images/slip_boundary.png" src="../_images/slip_boundary.png" />
+<figcaption>
+<p><span class="caption-number">図 3.6 </span><span class="caption-text">滑り境界条件</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="poisson">
+<h2><span class="section-number">3.3. </span>Poisson方程式への境界条件の組み込み<a class="headerlink" href="#poisson" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>バージョンによっては正確な記述では無い可能性.</p>
+</div>
+<p>非圧縮性流体のシミュレーションにおいては, 圧力に関するPoisson方程式を解く必要がある.
+本ソルバでは, この方程式を <span class="math notranslate nohighlight">\(A{\bf x}={\bf b}\)</span> の形式で解く. ここで <span class="math notranslate nohighlight">\({\bf x}\)</span> は
+求めるべきセル中心圧力を成分にもつベクトルである.</p>
+<p>ゴーストセルを使う都合上, 境界セルに対する定式化は内部セルと同様である. それゆえ, 解ベクトル <span class="math notranslate nohighlight">\({\bf x}\)</span> には
+内部セルの変数 <span class="math notranslate nohighlight">\(p_{C}\: (C=1,2,\dots ,n_{cellcount})\)</span> のみならずゴーストセルの変数
+<span class="math notranslate nohighlight">\(p_{G}\: (G=n_{cellcount}+1,n_{cellcount}+2,\dots ,n_{cellcount2})\)</span>  も含む. したがって,
+システム方程式 <span class="math notranslate nohighlight">\(A{\bf x}={\bf b}\)</span> を完全なものにするには, 内部セルに対する式</p>
+<div class="math notranslate nohighlight">
+\[a_{C}p_{C} + \sum_{f}^{NB(C)} a_{f} p_{f} = b_{C}\]</div>
+<p>のみならず, ゴーストセルに対する式も組み込まなければならない.</p>
+<div class="math notranslate nohighlight">
+\[a_{G}p_{G} + \sum_{f}^{NB(G)} a_{f} p_{f} = b_{G}\]</div>
+<p>ゴーストセルに対する離散式の係数 <span class="math notranslate nohighlight">\(a_{G}, a_{f}, b_{G}\)</span> は境界条件から定まる.
+通常, ゴーストセル1個あたりに隣接する内部セル(=境界セル)は1つだけであるから, <span class="math notranslate nohighlight">\(NB(G) = 1\)</span> である.
+しかし, スライド境界面の場合は隣接するセルが1つとは限らない. このような場合にも対処するため, 本ソルバでは
+ゴーストセルとそれに隣接するセルとの関係情報を隣接行列を用いて保持している.</p>
+<section id="id9">
+<h3><span class="section-number">3.3.1. </span>圧力固定<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>例えばスライド面ではない普通の境界面で <span class="math notranslate nohighlight">\(p_{b}\)</span> の圧力固定境界を与える場合, ゴーストセルの値は</p>
+<div class="math notranslate nohighlight">
+\[p_{G} = p_{b}\]</div>
+<p>で与えられる. 速度の境界条件と異なり, ゴーストセルに直接値を与えていることに注意する. したがって, この場合の係数は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_{G} &amp;= 1 \\
+a_{f} &amp;= 0 \\
+b_{G} &amp;= p_{b}\end{split}\]</div>
+<p>となる.</p>
+</section>
+<section id="id10">
+<h3><span class="section-number">3.3.2. </span>圧力勾配ゼロ<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>同様に, 圧力勾配ゼロの場合は</p>
+<div class="math notranslate nohighlight">
+\[p_{G} - p_{C} = 0\]</div>
+<p>であるから</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}a_{G} &amp;= 1 \\
+a_{f=C} &amp;= -1 \\
+b_{G} &amp;= 0\end{split}\]</div>
+<p>となる.</p>
+</section>
+</section>
+<section id="id11">
+<h2><span class="section-number">3.4. </span>実装と使い方<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<p>計算を実施する場合や, 新しく境界条件を設定する場合については, 境界条件クラスの作成方法だけわかればOK.</p>
+<section id="id12">
+<h3><span class="section-number">3.4.1. </span>境界ゾーンクラス<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<p>境界条件は流れを解く領域の境界(boundary)ゾーンに与える.
+例えば, 入口に一様流が流れ込み, 出口で流出する円管ポアズイユ流を解く場合, 3つの境界ゾーン― 流入面, 流出面, 壁面 ―を考慮する.
+それぞれの境界ゾーンに適切な境界条件(一様流入, 流出, 滑り無し条件)を与えることで正しく問題を解くことが出来る.
+それぞれの境界ゾーンは2次元図形の集まりである. 計算領域を四面体格子で分割した場合は，得られる境界ゾーンは
+全て三角形で構成されている.</p>
+<p>各境界ゾーンの面へのアクセスは <code class="docutils literal notranslate"><span class="pre">grid.f90</span></code> の <code class="docutils literal notranslate"><span class="pre">boundary_offsets</span></code> および <code class="docutils literal notranslate"><span class="pre">boundary_faces</span></code>
+の2つの配列から行う. 詳細は <a class="reference internal" href="fvm_mesh_data.html"><span class="doc">メッシュデータ</span></a> を参照のこと.</p>
+<p>各境界ゾーンに指定した境界条件を適用する実際の操作は, <code class="docutils literal notranslate"><span class="pre">boundary_t</span></code> クラスで行われる.</p>
+</section>
+<section id="id13">
+<h3><span class="section-number">3.4.2. </span>境界条件クラス<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<p>境界条件は <code class="docutils literal notranslate"><span class="pre">boundary_condition.f90</span></code> で定義される. ここでは
+境界条件を設定するための基底クラス <code class="docutils literal notranslate"><span class="pre">patch_field_t</span></code> が定義されている.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">patch_field_t</span>
+<span class="k">contains</span>
+<span class="k">    procedure</span><span class="p">(</span><span class="n">IEvaluate</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">deferred</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">evaluate</span>
+
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fixes_value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">fixes_value_false_</span>
+<span class="k">end type</span>
+
+<span class="k">abstract interface</span>
+<span class="k">    pure subroutine </span><span class="n">IEvaluate</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">face_velocity</span><span class="p">,</span><span class="w"> </span><span class="n">face_center</span><span class="p">,</span><span class="w"> </span><span class="n">face_normal</span><span class="p">,</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">prim_count</span><span class="p">,</span><span class="w"> </span><span class="n">ghost_q</span><span class="p">)</span>
+<span class="w">        </span><span class="k">import </span><span class="n">patch_field_t</span>
+<span class="w">        </span><span class="k">import </span><span class="n">WP_</span>
+<span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">q</span><span class="p">(:),</span><span class="w"> </span><span class="n">face_velocity</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">face_center</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">face_normal</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prim_count</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ghost_q</span><span class="p">(:)</span>
+<span class="w">    </span><span class="k">end subroutine</span>
+
+<span class="k">end interface</span>
+</pre></div>
+</div>
+<p>プロシージャ <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> は仮想セルを更新する処理であり, <code class="docutils literal notranslate"><span class="pre">fixes_value</span></code> は境界条件が固定値境界か勾配規定かを
+判定する処理である. <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> の引数は, 抽象クラスのインターフェース宣言 <code class="docutils literal notranslate"><span class="pre">abstract</span> <span class="pre">interface</span> <span class="pre">~</span> <span class="pre">end</span> <span class="pre">interface</span></code> を読めば分かるように,
+<strong>ある1つの境界面に対して条件を適用する</strong> 仕様になっている. したがって, あるゾーンの全ての境界面に対して, この関数が毎回呼び出される.
+また, この関数は毎時間ステップ呼び出されるので, 例えば流量が時間的に変化する流入条件のようなことも原理的には可能である.</p>
+<p>具体的な境界条件クラスはこれを継承して実装される. 例えば固定値境界と勾配ゼロ規定については既に用意されている.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="c">!&gt; @brief 固定値流入の境界条件を設定する。</span>
+<span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fixed_value_patch_t</span>
+<span class="k">contains</span>
+<span class="k">    procedure</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fixes_value</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">fixes_value_true_</span>
+<span class="k">end type</span>
+
+
+<span class="c">!&gt; @brief 勾配0のノイマン境界条件を設定する。</span>
+<span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">zero_gradient_patch_t</span>
+<span class="k">contains</span>
+<span class="k">    procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">evaluate</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">bc_zero_gradient_</span>
+<span class="k">end type</span>
+</pre></div>
+</div>
+<p>さらに拡張したい場合はこれらのクラスを継承して新しい子クラスを作る.</p>
+<p>壁面については別途ことなる基底クラスが用意されている.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wall_patch_t</span>
+
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">velocity_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c">!&lt; 速度の種類。</span>
+<span class="w">                                       </span><span class="c">!! @details 0ならwall_velocityが使用される。1なら一様速度が使用される。</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">uniform_velocity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c">!&lt; 平行速度。壁の初期速度としても利用する。</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">origin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="w">     </span><span class="c">!&lt; 回転原点。</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">axis</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="w">       </span><span class="c">!&lt; 単位方向ベクトル。</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">omega</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">               </span><span class="c">!&lt; 角速度。 [rad/s]</span>
+
+<span class="w">    </span><span class="c">!real(WP_), allocatable, public :: wall_velocity(:,:) !&lt; 各面の速度。</span>
+<span class="w">    </span><span class="c">!                                                     !! @note 使用者が適切なサイズに割り当てる必要がある。</span>
+<span class="k">contains</span>
+<span class="k">    procedure</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">non_overridable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_velocity</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">get_velocity_wall_patch_</span>
+<span class="k">end type</span>
+</pre></div>
+</div>
+<p>必要ならこれらを継承すれば良い.</p>
+</section>
+<section id="id14">
+<h3><span class="section-number">3.4.3. </span>ゾーンとの対応付け<a class="headerlink" href="#id14" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>このページの存続について. ガイドとするにはやや細かすぎるかもしれない.</p>
+</div>
+<p>境界条件はそれを適用する解析領域の境界面(ゾーンと呼ぶ)と関連付けられる. 例えば流入面に対応するゾーンに対しては速度固定,
+圧力ノイマンなどの条件を与えるだろう.</p>
+<p>境界条件はコンフィグファイル <code class="docutils literal notranslate"><span class="pre">case_setting.txt</span></code> でゾーン毎に対応する番号を指定することで適用出来る.
+各ゾーン番号とその境界条件番号, および与える境界値は構造体 <code class="docutils literal notranslate"><span class="pre">case_setting_t</span></code> のメンバ <code class="docutils literal notranslate"><span class="pre">zone_t</span></code> が管理している.
+コンフィグファイルで指定された番号に対応する境界条件クラス <code class="docutils literal notranslate"><span class="pre">patch_field_t</span></code> とゾーンとを結びつける役割は, <code class="docutils literal notranslate"><span class="pre">case_setting.f90</span></code> の関数
+<code class="docutils literal notranslate"><span class="pre">create_bc_default</span></code> が担う. 返値は対応する境界条件クラスのポインタである.</p>
+<p>境界条件とゾーンとの対応付けはケースクラス <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> で行われる. 一部抜粋する.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">setup_bc_</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">fluid</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">zone_count</span><span class="p">,</span><span class="w"> </span><span class="n">is_restart</span><span class="p">)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">case_common_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">fluid_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fluid</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">grid_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">grid</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">zone_count</span>
+<span class="w">    </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_restart</span>
+
+<span class="w">    </span><span class="kt">integer </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">bounds</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">zone_count</span><span class="p">),</span><span class="w"> </span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">ids</span><span class="p">(</span><span class="n">zone_count</span><span class="p">),</span><span class="w"> </span><span class="n">bc_types</span><span class="p">(</span><span class="n">zone_count</span><span class="p">),</span><span class="w"> </span><span class="n">q_size</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">)</span><span class="w"> </span><span class="n">uvwp</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">q</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bc</span>
+<span class="w">    </span><span class="k">class</span><span class="p">(</span><span class="n">patch_field_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ptr</span>
+
+<span class="w">    </span><span class="n">bounds</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">grid</span><span class="p">%</span><span class="n">boundary_offsets</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">zone_count</span><span class="p">)</span>
+<span class="w">    </span><span class="n">bounds</span><span class="p">(</span><span class="mi">2</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">grid</span><span class="p">%</span><span class="n">boundary_offsets</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">zone_count</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">    </span><span class="c">!中略</span>
+
+<span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="n">bc_pressure_</span><span class="p">(</span><span class="n">zone_count</span><span class="p">))</span>
+<span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="n">bc_velocity_</span><span class="p">(</span><span class="n">zone_count</span><span class="p">))</span>
+
+<span class="w">    </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">zone_count</span>
+<span class="w">        </span><span class="n">uvwp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">case_setting_</span><span class="p">%</span><span class="n">zones</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">ruvwp</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">        </span><span class="n">bc_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">case_setting_</span><span class="p">%</span><span class="n">zones</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">type_u</span>
+<span class="w">        </span><span class="n">ptr</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">create_bc_impl_</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">uvwp</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">fluid</span><span class="p">%</span><span class="n">heat_capacity_ratio</span><span class="p">)</span>
+<span class="w">        </span><span class="k">call </span><span class="n">this</span><span class="p">%</span><span class="n">bc_velocity_</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">set_bc</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">bounds</span><span class="p">(:,</span><span class="n">i</span><span class="p">))</span>
+
+<span class="w">        </span><span class="n">bc_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">case_setting_</span><span class="p">%</span><span class="n">zones</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">type_p</span>
+<span class="w">        </span><span class="n">ptr</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">create_bc_impl_</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">bc_type</span><span class="p">,</span><span class="w"> </span><span class="n">uvwp</span><span class="p">(</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">fluid</span><span class="p">%</span><span class="n">heat_capacity_ratio</span><span class="p">)</span>
+<span class="w">        </span><span class="k">call </span><span class="n">this</span><span class="p">%</span><span class="n">bc_pressure_</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">set_bc</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">bounds</span><span class="p">(:,</span><span class="n">i</span><span class="p">))</span>
+<span class="w">    </span><span class="k">end do</span>
+</pre></div>
+</div>
+<p>ループ内で, 各ゾーンの境界値 <code class="docutils literal notranslate"><span class="pre">ruvwp</span></code> と境界条件番号 <code class="docutils literal notranslate"><span class="pre">type_u,</span> <span class="pre">type_b</span></code> を用いて <code class="docutils literal notranslate"><span class="pre">create_bc_impl_</span></code> にて
+対応する境界条件クラスを取得し, <code class="docutils literal notranslate"><span class="pre">bc_holder_t</span></code> クラスのインスタンス <code class="docutils literal notranslate"><span class="pre">bc_velocity_,</span> <span class="pre">bc_pressure_</span></code> に格納する.
+なお <code class="docutils literal notranslate"><span class="pre">bounds(:,i)</span></code> は各ゾーン <code class="docutils literal notranslate"><span class="pre">i</span></code> の面と関連付けられたオフセット配列である.</p>
+</section>
+<section id="id15">
+<h3><span class="section-number">3.4.4. </span>境界条件の適用<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<p>上の処理で対応付けは完了した. 実際に境界条件を適用する(=境界面の値と境界セルの値から仮想セルへ外挿する)ためには, 面番号や面の幾何情報などが必要である.
+境界条件を適用するために必要なこれらの情報を取り扱うクラスが <code class="docutils literal notranslate"><span class="pre">boundary_t</span></code> である. <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> クラスのメンバとして保持されている.</p>
+<div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">boundary_t</span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face2cell_</span><span class="p">(:,:)</span>
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">bc_face_t</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">faces</span><span class="p">(:)</span>
+
+<span class="w">    </span><span class="c">! patch の中をdo版にしたとkは以下を使う。</span>
+<span class="w">    </span><span class="c">!integer, private, allocatable :: cells_(:,:) ! 1:内部セル、2:ゴーストセル。</span>
+<span class="w">    </span><span class="c">!real(WP_), private, allocatable :: face_normals(:,:)   ! 面の法線。</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face_centers_</span><span class="p">(:,:)</span><span class="w">   </span><span class="c">! 面の中心。</span>
+<span class="w">    </span><span class="c">!real(WP_), private, allocatable :: face_cell_centers(:,:)</span>
+<span class="w">    </span><span class="c">!real(WP_), private, allocatable :: face_cell_distances(:)</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">public</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">face_velocities</span><span class="p">(:,:)</span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">WP_</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">gamma_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">backward_difference_t</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bdfs_</span>
+<span class="k">contains</span>
+
+<span class="k">    procedure</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">init</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">update</span>
+<span class="w">    </span><span class="k">generic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">apply_boundary_condition</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">apply_boundary_condition_r1_</span><span class="p">,</span><span class="w"> </span><span class="n">apply_boundary_condition_r2_</span><span class="p">,</span><span class="w"> </span><span class="n">apply_boundary_condition_r3_</span>
+
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">apply_boundary_condition_r1_</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">apply_boundary_condition_r2_</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">apply_boundary_condition_r3_</span>
+
+
+
+<span class="w">    </span><span class="c">!============================== I/O overload =================================</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">unformatted_write_</span>
+<span class="w">    </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">unformatted_read_</span>
+<span class="w">    </span><span class="k">generic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">write</span><span class="p">(</span><span class="n">unformatted</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">unformatted_write_</span>
+<span class="w">    </span><span class="k">generic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">read</span><span class="p">(</span><span class="n">unformatted</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">unformatted_read_</span>
+<span class="w">    </span><span class="c">!============================= End I/O overload ===============================</span>
+<span class="k">end type</span>
+</pre></div>
+</div>
+<p>このクラスは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> クラスのメンバを別途保持している. メンバ関数 <code class="docutils literal notranslate"><span class="pre">apply_boundary_condition</span></code> で
+境界条件クラスの <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> を呼び出す.  処理内容は, あるゾーンの境界面1つ1つに対して境界条件クラスの <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> 関数を
+呼び出すというものである.</p>
+<p><strong>References</strong></p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id16" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">1</a><span class="fn-bracket">]</span></span>
+<p>日野幹雄, 流体力学, 朝倉書店, p.119</p>
+</aside>
+</aside>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="geometry.html" class="btn btn-neutral float-left" title="2. 幾何量の計算" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gradient_scheme.html" class="btn btn-neutral float-right" title="4. 勾配スキーム" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Advanced Fluid Dynamics and Energy Transfer Laboratory, Kyoto Institue of Technology.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
