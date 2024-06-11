@@ -1,4 +1,7 @@
 # Info
+
+ドキュメント本体は[こちら](https://hirotori.github.io/afdet_user_guide/)
+
 ## 開発環境
 `Sphinx` のインストール. https://planset-study-sphinx.readthedocs.io/ja/latest/02.html を参考に.
 
