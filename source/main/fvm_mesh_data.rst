@@ -264,7 +264,7 @@
 
     円柱周りの流れにおける境界ゾーンの定義の例.
 
-ここで ``zone`` は境界ゾーンの番号である. 番号の指定については X を参照.
+ここで ``zone`` は境界ゾーンの番号である. 番号の指定については :doc:`/custom/setup_boundary_zone` を参照.
 ``boundary_offsets`` は ``cell_offsets`` と同様に,
 指定した ``zone`` の境界面 ``boundary_faces`` にアクセスするための
 オフセット配列である. 例を以下に示す.
