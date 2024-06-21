@@ -66,7 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="backward_diff.html">3. 後退差分クラス</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. バネ格子</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 概要</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. 格子の代数的な変形法(1自由度)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. 強制変位(1自由度)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id4">4.2.1. 関数の制約</a></li>
 </ul>
 </li>
@@ -129,7 +129,7 @@
 適切な利用と今後のメンテナンスのために,ここにばね格子法の基礎式やその実装について書き記す.</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">4.2. </span>格子の代数的な変形法(1自由度)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.2. </span>強制変位(1自由度)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p>バネ格子の説明に入る前に, バネ格子を利用しない格子の変形方法について説明する.
 問題が例えばピストン運動のような1自由度の移動(直線上の運動)の場合は,バネ格子をわざわざ利用せずとも,
 以下に述べる方法を用いれば十分に計算可能である.</p>
@@ -144,14 +144,13 @@
 <div class="math notranslate nohighlight">
 \[f(x_{a,0}, t) = A(t)x_{a,0} + B(t)\]</div>
 <p>が選ばれる.</p>
-<p>例として, ピストン運動を考える.</p>
+<p>例として, 以下のようなピストン運動を考える.</p>
 <blockquote>
 <div><p>左端が <span class="math notranslate nohighlight">\(x_{0}=\alpha\)</span> , 右端が <span class="math notranslate nohighlight">\(x_{0}=\beta\;(\beta &gt; \alpha)\)</span> にあるような円管を考える．
 左端を変位 <span class="math notranslate nohighlight">\(l(t)\)</span> で動かし，右端を固定するとき <span class="math notranslate nohighlight">\(\alpha &lt; x &lt; \beta\)</span> に存在する節点を動かすための
 移動式の係数 <span class="math notranslate nohighlight">\(a(t), b(t)\)</span> を求める.</p>
 </div></blockquote>
-<p><strong>解答例</strong>
-<span class="math notranslate nohighlight">\(f(x_{a,0},t) = A(t)x_{a,0} + B(t)\)</span> とおく. 左端の節点 <span class="math notranslate nohighlight">\(a\)</span> の時刻 <span class="math notranslate nohighlight">\(t\)</span> における <strong>変位</strong> は</p>
+<p><span class="math notranslate nohighlight">\(f(x_{a,0},t) = A(t)x_{a,0} + B(t)\)</span> とおく. 左端の節点 <span class="math notranslate nohighlight">\(a\)</span> の時刻 <span class="math notranslate nohighlight">\(t\)</span> における <strong>変位</strong> は</p>
 <div class="math notranslate nohighlight">
 \[x_{a}(t)-x_{a,0} = l(t)\]</div>
 <p>に等しい. (絶対位置ではなく変位であることに注意.) よって</p>
@@ -188,6 +187,8 @@
 <div class="math notranslate nohighlight">
 \[\frac{df}{dx} &gt; -1\]</div>
 <p>となる. 1自由度の運動を 式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(4.1)</a> で与える場合は,上の条件に留意する必要がある.</p>
+<p>1自由度の運動であれば, 上記の強制変位法で大抵は解決できる．しかし，運動が2次元や3次元的になると，この方法はうまくいかない可能性が高い．
+より複雑な運動に対応するために，バネ格子法を用いる．</p>
 </section>
 </section>
 <section id="id5">
@@ -225,7 +226,7 @@
 <p>vertex springは新しい座標を周囲の座標の重み付き平均で求めることと同じである. 重み係数 <span class="math notranslate nohighlight">\(\alpha_{ij}\)</span> は普通</p>
 <div class="math notranslate nohighlight">
 \[\alpha_{ij} = 1 \quad \forall i,j\]</div>
-<p>とする <a class="footnote-reference brackets" href="#id19" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> . したがって, 新しい節点座標は周囲の節点座標の算術平均である. Laplacian smoothingと同じである.</p>
+<p>とする <a class="footnote-reference brackets" href="#id19" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> . したがって, 新しい節点座標は周囲の節点座標の算術平均である. これは Laplacian smoothing と同じである.</p>
 </section>
 <section id="segment-spring-method">
 <h3><span class="section-number">4.3.2. </span>segment spring method<a class="headerlink" href="#segment-spring-method" title="Link to this heading"></a></h3>
@@ -300,7 +301,7 @@ Farhatらのねじりバネ定数は以下のように定義される.</p>
 </section>
 <section id="id17">
 <h2><span class="section-number">4.6. </span>ソルバでの取り扱い<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
-<p>本ソルバでは, 村山らの半ねじりバネの方法を採用している.
+<p>本ソルバでは, 村山らの半ねじりバネの方法を援用した segment spring model を採用している.
 ただし村山等の報告と異なり, Farhatらの2次元問題のねじりばね定数(すなわち,2辺角)も加えている. したがって, 辺 <span class="math notranslate nohighlight">\(l_{ij}\)</span> に対するばね定数は</p>
 <div class="math notranslate nohighlight">
 \[k_{ij} = \frac{1}{\left\|\boldsymbol{x}_{j}^{n} - \boldsymbol{x}_{i}^{n}\right\|} + \sum_{k} \frac{1}{\sin^{2}\theta_{k}^{edge}} + \sum_{k} \frac{1}{\sin^{2}\theta_{k}^{plane}}\]</div>
