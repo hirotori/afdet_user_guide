@@ -61,6 +61,7 @@ afdet solver は 非構造移動格子有限体積法のためのフレームワ
    :numbered:
 
    /custom/setup_boundary_zone.rst
+   /custom/moveMesh.rst
    /custom/makeBC.rst
    /custom/plugin_case.rst
    /custom/use_intel_mkl.rst

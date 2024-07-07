@@ -66,31 +66,28 @@
 <li class="toctree-l1"><a class="reference internal" href="backward_diff.html">3. 後退差分クラス</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. バネ格子</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 概要</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. 強制変位(1自由度)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">4.2.1. 関数の制約</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">4.2. バネ格子法</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vertex-spring-method">4.2.1. vertex spring method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#segment-spring-method">4.2.2. segment spring method</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">4.3. バネ格子法</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#vertex-spring-method">4.3.1. vertex spring method</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#segment-spring-method">4.3.2. segment spring method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">4.3. ねじりバネの方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">4.4. 半ねじりバネの方法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">4.5. ソルバでの取り扱い</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id16">4.5.1. クラス</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id12">4.4. ねじりバネの方法</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id14">4.5. 半ねじりバネの方法</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id17">4.6. ソルバでの取り扱い</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id18">4.6.1. クラス</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#references">4.7. References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">4.6. References</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../custom/setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">2. 境界条件の作成例</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">3. ユーザーカスタマイズの方法</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">4. Intel MKL を利用する方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/moveMesh.html">2. 格子の変形</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/makeBC.html">3. 境界条件の作成例</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/plugin_case.html">4. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom/use_intel_mkl.html">5. Intel MKL を利用する方法</a></li>
 </ul>
 
         </div>
@@ -129,71 +126,8 @@
 適切な利用と今後のメンテナンスのために,ここにばね格子法の基礎式やその実装について書き記す.</p>
 </section>
 <section id="id3">
-<h2><span class="section-number">4.2. </span>強制変位(1自由度)<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
-<p>バネ格子の説明に入る前に, バネ格子を利用しない格子の変形方法について説明する.
-問題が例えばピストン運動のような1自由度の移動(直線上の運動)の場合は,バネ格子をわざわざ利用せずとも,
-以下に述べる方法を用いれば十分に計算可能である.</p>
-<p>まず，ある節点(セルを構成するある格子点) <span class="math notranslate nohighlight">\(a\)</span> の時刻 <span class="math notranslate nohighlight">\(t\)</span> における座標を <span class="math notranslate nohighlight">\(x_{a}(t)\)</span> ,
-初期座標を <span class="math notranslate nohighlight">\(x_{a,0}=x_{a}(0)\)</span> と書くことにする．
-この格子移動法では，節点の初期座標からの移動量を，<strong>初期座標に依存して決定する</strong>.
-<span class="math notranslate nohighlight">\(x_{a}(t)-x_{a,0}\)</span> を以下のように定める．</p>
-<div class="math notranslate nohighlight" id="equation-eq-mesh-1d-move">
-<span class="eqno">(4.1)<a class="headerlink" href="#equation-eq-mesh-1d-move" title="Link to this equation"></a></span>\[x_{a}(t)-x_{a,0} = f(x_{a,0}, t)\]</div>
-<p>ここで <span class="math notranslate nohighlight">\(f(x_{a,0}, t)\)</span> は任意の関数であるが，多少の制約は存在する．それについては後ほど述べる．
-たいていは線形関数</p>
-<div class="math notranslate nohighlight">
-\[f(x_{a,0}, t) = A(t)x_{a,0} + B(t)\]</div>
-<p>が選ばれる.</p>
-<p>例として, 以下のようなピストン運動を考える.</p>
-<blockquote>
-<div><p>左端が <span class="math notranslate nohighlight">\(x_{0}=\alpha\)</span> , 右端が <span class="math notranslate nohighlight">\(x_{0}=\beta\;(\beta &gt; \alpha)\)</span> にあるような円管を考える．
-左端を変位 <span class="math notranslate nohighlight">\(l(t)\)</span> で動かし，右端を固定するとき <span class="math notranslate nohighlight">\(\alpha &lt; x &lt; \beta\)</span> に存在する節点を動かすための
-移動式の係数 <span class="math notranslate nohighlight">\(a(t), b(t)\)</span> を求める.</p>
-</div></blockquote>
-<p><span class="math notranslate nohighlight">\(f(x_{a,0},t) = A(t)x_{a,0} + B(t)\)</span> とおく. 左端の節点 <span class="math notranslate nohighlight">\(a\)</span> の時刻 <span class="math notranslate nohighlight">\(t\)</span> における <strong>変位</strong> は</p>
-<div class="math notranslate nohighlight">
-\[x_{a}(t)-x_{a,0} = l(t)\]</div>
-<p>に等しい. (絶対位置ではなく変位であることに注意.) よって</p>
-<div class="math notranslate nohighlight">
-\[A(t)\alpha + B(t) = l(t)\]</div>
-<p>が成り立つ. 同様に右端についても</p>
-<div class="math notranslate nohighlight">
-\[A(t)\beta + B(t) = 0\]</div>
-<p>が成り立つので, 連立して <span class="math notranslate nohighlight">\(A,B\)</span> を求めると,</p>
-<div class="math notranslate nohighlight">
-\[x(t) -x_{0} = \frac{l(t)}{\alpha - \beta}x_{0} - \frac{l(t)}{\alpha - \beta} \beta\]</div>
-<p>となる. (下添え字 <span class="math notranslate nohighlight">\(a\)</span> は省略.)</p>
-<section id="id4">
-<h3><span class="section-number">4.2.1. </span>関数の制約<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
-<p>上記で述べた方法は節点だけに着目しているため，格子の形状については全く考慮していない．そのため，
-場合によってはある節点が隣り合う節点を追い越してしまい，結果として計算の破綻を引き起こすことがある．
-そこで，ここでは節点の位置関係を保つためにはどのような条件が必要になるのかについて考察する．
-簡単のため，節点が一直線上に存在することを仮定している．</p>
-<p>ある2つの点 <span class="math notranslate nohighlight">\(x_{a},x_{b}\)</span> を考える. ただし <span class="math notranslate nohighlight">\(x_{a}(0) &lt; x_{b}(0)\)</span> とする.
-節点の位置関係を保つためには,
-任意の時刻 <span class="math notranslate nohighlight">\(t\)</span> においてつねに <span class="math notranslate nohighlight">\(x_{a}(t) &lt; x_{b}(t)\)</span> を満たさなければならない.
-式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(4.1)</a> を用いて,両者の差をとると</p>
-<div class="math notranslate nohighlight">
-\[x_{b}(t) - x_{a}(t) = (x_{b,0} - x_{a,0}) \left( 1 + \frac{f(x_{b,0},t) - f(x_{a,0},t)}{x_{b,0} - x_{a,0}}\right)\]</div>
-<p>となるので, 要求を満たすためには</p>
-<div class="math notranslate nohighlight" id="equation-eq-mesh-move-constraint">
-<span class="eqno">(4.2)<a class="headerlink" href="#equation-eq-mesh-move-constraint" title="Link to this equation"></a></span>\[\frac{f(x_{b,0},t) - f(x_{a,0},t)}{x_{b,0} - x_{a,0}} &gt; -1\]</div>
-<p>でなければならない.</p>
-<p>もし2つの点として <span class="math notranslate nohighlight">\(x_{0}, x_{0} + \delta x_{0}\)</span> をとると, <span class="math notranslate nohighlight">\(f(x_{0} + \delta x_{0},t)=f(x_{0},t)+\delta f\)</span> とおいて,
-<a class="reference internal" href="#equation-eq-mesh-move-constraint">(4.2)</a> より</p>
-<div class="math notranslate nohighlight">
-\[\frac{\delta f}{\delta x_{0}} &gt; -1\]</div>
-<p>が成り立つ. <span class="math notranslate nohighlight">\(\delta x_{0} \rightarrow 0\)</span> の極限をとると,</p>
-<div class="math notranslate nohighlight">
-\[\frac{df}{dx} &gt; -1\]</div>
-<p>となる. 1自由度の運動を 式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(4.1)</a> で与える場合は,上の条件に留意する必要がある.</p>
-<p>1自由度の運動であれば, 上記の強制変位法で大抵は解決できる．しかし，運動が2次元や3次元的になると，この方法はうまくいかない可能性が高い．
-より複雑な運動に対応するために，バネ格子法を用いる．</p>
-</section>
-</section>
-<section id="id5">
-<h2><span class="section-number">4.3. </span>バネ格子法<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
-<p>バネ格子は大まかに2つの方法, vertex spring と segment spring, に分けられる <a class="footnote-reference brackets" href="#id19" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
+<h2><span class="section-number">4.2. </span>バネ格子法<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>バネ格子は大まかに2つの方法, vertex spring と segment spring, に分けられる <a class="footnote-reference brackets" href="#id17" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
 前者はバネの長さが0で無い限り常に張力を生じる（バネの長さが0のときつりあう）モデルで,
 主にメッシュのスムージングに用いられる. 後者は対照的に，変形前の初期状態で釣り合うと仮定し，
 節点が移動することにより張力を生じるモデルである．移動格子の方法としてのバネ格子は主に後者が用いられるので,
@@ -201,7 +135,7 @@
 <p>vertex spring も segment springモデルも, 要素の辺をバネと見立てることは共通である. 両者の違いは釣合いの考え方である.
 前者はバネの平衡長さ(equilbrium length)をゼロとする. 一方で後者は平衡長さは初期(移動前)の辺長である.</p>
 <section id="vertex-spring-method">
-<h3><span class="section-number">4.3.1. </span>vertex spring method<a class="headerlink" href="#vertex-spring-method" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.2.1. </span>vertex spring method<a class="headerlink" href="#vertex-spring-method" title="Link to this heading"></a></h3>
 <p>ある時刻の <span class="math notranslate nohighlight">\(i\)</span> 番目の節点座標を <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}\)</span> とおく.
 節点 <span class="math notranslate nohighlight">\(i\)</span> に隣接する節点を <span class="math notranslate nohighlight">\(j\)</span> とおくと, 辺 <span class="math notranslate nohighlight">\(ij\)</span> 間に働くバネによる復元力は</p>
 <div class="math notranslate nohighlight">
@@ -209,33 +143,33 @@
 <p>と表される. <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}=\boldsymbol{x}_{j}\)</span> のとき復元力はゼロである.
 隣接する節点は普通は複数個有るので, 合力は</p>
 <div class="math notranslate nohighlight" id="equation-eq-vertex-spring">
-<span class="eqno">(4.3)<a class="headerlink" href="#equation-eq-vertex-spring" title="Link to this equation"></a></span>\[\boldsymbol{F}_{ij} = \sum_{j \sim nb(i)} \boldsymbol{f}_{ij} = \sum_{j \sim nb(i)}\alpha_{ij} (\boldsymbol{x}_{j} - \boldsymbol{x}_{i})\]</div>
-<p>となる. 新しい節点座標は, この式を基に, 以下の反復法を用いて求められる <a class="footnote-reference brackets" href="#id19" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<span class="eqno">(4.1)<a class="headerlink" href="#equation-eq-vertex-spring" title="Link to this equation"></a></span>\[\boldsymbol{F}_{ij} = \sum_{j \sim nb(i)} \boldsymbol{f}_{ij} = \sum_{j \sim nb(i)}\alpha_{ij} (\boldsymbol{x}_{j} - \boldsymbol{x}_{i})\]</div>
+<p>となる. 新しい節点座標は, この式を基に, 以下の反復法を用いて求められる <a class="footnote-reference brackets" href="#id17" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <div class="math notranslate nohighlight" id="equation-eq-vertex-spring-iter">
-<span class="eqno">(4.4)<a class="headerlink" href="#equation-eq-vertex-spring-iter" title="Link to this equation"></a></span>\[\boldsymbol{x}_{i}^{k+1} = \frac{\sum_{j \sim nb(i)}\alpha_{ij}\boldsymbol{x}_{j}^{k}}{\sum_{j \sim nb(i)}\alpha_{ij}}\]</div>
+<span class="eqno">(4.2)<a class="headerlink" href="#equation-eq-vertex-spring-iter" title="Link to this equation"></a></span>\[\boldsymbol{x}_{i}^{k+1} = \frac{\sum_{j \sim nb(i)}\alpha_{ij}\boldsymbol{x}_{j}^{k}}{\sum_{j \sim nb(i)}\alpha_{ij}}\]</div>
 <p>なお <span class="math notranslate nohighlight">\(k\)</span> は反復インデックスである. 普通この方程式を厳密に解くことは無い.
 節点には境界面上の節点も含まれるが, 反復の間は固定される.</p>
-<p>式 <a class="reference internal" href="#equation-eq-vertex-spring-iter">(4.4)</a> の物理的な解釈を述べる. 式 <a class="reference internal" href="#equation-eq-vertex-spring">(4.3)</a> を基に釣合方程式を立てると,</p>
+<p>式 <a class="reference internal" href="#equation-eq-vertex-spring-iter">(4.2)</a> の物理的な解釈を述べる. 式 <a class="reference internal" href="#equation-eq-vertex-spring">(4.1)</a> を基に釣合方程式を立てると,</p>
 <div class="math notranslate nohighlight">
 \[-\sum_{j \sim nb(i)}\alpha_{ij} \boldsymbol{x}_{i} + \sum_{j \sim nb_{inner}(i)}\alpha_{ij}\boldsymbol{x}_{j} = -\sum_{j \sim nb_{bnd.}(i)}\alpha_{ij}\boldsymbol{x}_{j}\]</div>
 <p>とかける. 左辺は領域内部の, 右辺は境界面上の節点についての和である. 全ての内部の節点 <span class="math notranslate nohighlight">\(i\)</span> についてこれが成り立たねばならない.
 これは連立方程式</p>
 <div class="math notranslate nohighlight">
 \[\boldsymbol{A}\boldsymbol{X}=\boldsymbol{B}\]</div>
-<p>を解くことと同じである. これを直接解くのは計算コストが著しいので, Jacobi法により解を求める. その式こそ <a class="reference internal" href="#equation-eq-vertex-spring-iter">(4.4)</a> である.</p>
+<p>を解くことと同じである. これを直接解くのは計算コストが著しいので, Jacobi法により解を求める. その式こそ <a class="reference internal" href="#equation-eq-vertex-spring-iter">(4.2)</a> である.</p>
 <p>vertex springは新しい座標を周囲の座標の重み付き平均で求めることと同じである. 重み係数 <span class="math notranslate nohighlight">\(\alpha_{ij}\)</span> は普通</p>
 <div class="math notranslate nohighlight">
 \[\alpha_{ij} = 1 \quad \forall i,j\]</div>
-<p>とする <a class="footnote-reference brackets" href="#id19" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> . したがって, 新しい節点座標は周囲の節点座標の算術平均である. これは Laplacian smoothing と同じである.</p>
+<p>とする <a class="footnote-reference brackets" href="#id17" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> . したがって, 新しい節点座標は周囲の節点座標の算術平均である. これは Laplacian smoothing と同じである.</p>
 </section>
 <section id="segment-spring-method">
-<h3><span class="section-number">4.3.2. </span>segment spring method<a class="headerlink" href="#segment-spring-method" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.2.2. </span>segment spring method<a class="headerlink" href="#segment-spring-method" title="Link to this heading"></a></h3>
 <p>segment springでは, 節点の座標では無く節点の変位に対してフックの法則が適用される.
 移動前の節点 <span class="math notranslate nohighlight">\(i,j\)</span> の位置座標を <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}^{n},\boldsymbol{x}_{j}^{n}\)</span> とし,
 変位を <span class="math notranslate nohighlight">\(q_{i},q_{j}\)</span> , 移動後の位置座標を <span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}^{n+1}=\boldsymbol{x}_{i}^{n}+\boldsymbol{q}_{i},\boldsymbol{x}_{j}^{n+1}=\boldsymbol{x}_{j}^{n}+\boldsymbol{q}_{j}\)</span> とおく.</p>
-<p>節点 <span class="math notranslate nohighlight">\(i\)</span> に働く 節点 <span class="math notranslate nohighlight">\(j\)</span> からの力 <span class="math notranslate nohighlight">\(\boldsymbol{F}_{ij}\)</span> は, 次式で表される <a class="footnote-reference brackets" href="#id19" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p>節点 <span class="math notranslate nohighlight">\(i\)</span> に働く 節点 <span class="math notranslate nohighlight">\(j\)</span> からの力 <span class="math notranslate nohighlight">\(\boldsymbol{F}_{ij}\)</span> は, 次式で表される <a class="footnote-reference brackets" href="#id17" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <div class="math notranslate nohighlight" id="equation-eq-segment-spring">
-<span class="eqno">(4.5)<a class="headerlink" href="#equation-eq-segment-spring" title="Link to this equation"></a></span>\[\begin{split}\boldsymbol{F}_{ij} &amp;= k_{ij} \left\{
+<span class="eqno">(4.3)<a class="headerlink" href="#equation-eq-segment-spring" title="Link to this equation"></a></span>\[\begin{split}\boldsymbol{F}_{ij} &amp;= k_{ij} \left\{
 (\boldsymbol{x}_{j}^{n+1}-\boldsymbol{x}_{i}^{n+1}) - (\boldsymbol{x}_{j}^{n}-\boldsymbol{x}_{i}^{n})
 \right\} \\
 &amp;= k_{ij} (\boldsymbol{q}_{i} - \boldsymbol{q}_{i})\end{split}\]</div>
@@ -247,24 +181,24 @@
 <div class="math notranslate nohighlight">
 \[k_{ij} = \frac{1}{\left\|\boldsymbol{x}_{j}^{n} - \boldsymbol{x}_{i}^{n}\right\|}\]</div>
 <p>長さの逆数をとることで, 格子点が密な領域ではバネを硬くして大変形を妨げ, 格子の破綻を避けることが出来る.
-この選択が合理的であることは, 1次元問題の場合にBlom <a class="footnote-reference brackets" href="#id19" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> により示されている.</p>
+この選択が合理的であることは, 1次元問題の場合にBlom <a class="footnote-reference brackets" href="#id17" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> により示されている.</p>
 <p>反復の後で, 新しい節点座標が以下の式により計算される.</p>
 <div class="math notranslate nohighlight">
 \[\boldsymbol{x}_{i}^{n+1} = \boldsymbol{x}_{i}^{n} + \boldsymbol{q}_{i}^{k_{end}}\]</div>
 <p>上式では, <span class="math notranslate nohighlight">\(x\)</span> 方向の変位は <span class="math notranslate nohighlight">\(x\)</span> 方向の力にのみ作用する. <span class="math notranslate nohighlight">\(y\)</span> も同様である.
 しかし厳密には, トラス構造の例でわかるように, <span class="math notranslate nohighlight">\(x\)</span> および <span class="math notranslate nohighlight">\(y\)</span> 方向の力は <span class="math notranslate nohighlight">\(x,y\)</span> 方向の変位両方に依存する.
 したがって上式は簡略化されたバネの釣合いを考えていることになる.
-厳密なバネの釣合いを考える例は例えば Farhat <a class="footnote-reference brackets" href="#id20" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> らなどがある.</p>
+厳密なバネの釣合いを考える例は例えば Farhat <a class="footnote-reference brackets" href="#id18" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> らなどがある.</p>
 </section>
 </section>
-<section id="id12">
-<h2><span class="section-number">4.4. </span>ねじりバネの方法<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<section id="id10">
+<h2><span class="section-number">4.3. </span>ねじりバネの方法<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
 <p>非構造三角形格子の変形で大きな問題となるのは, セルの反転である.
 三角形格子の場合, 三角形の頂点が反対側の面を通過し, セルが反転してしまうという難点がある. (これはsnap-throughと呼ばれている.)
-Farhat <a class="footnote-reference brackets" href="#id20" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> らはこれを解決するため, 三角形の辺の端(つまり頂点上)にねじりバネを設置し, 辺のねじれを考慮した.
+Farhat <a class="footnote-reference brackets" href="#id18" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> らはこれを解決するため, 三角形の辺の端(つまり頂点上)にねじりバネを設置し, 辺のねじれを考慮した.
 Farhatらのねじりバネ定数は以下のように定義される.</p>
 <div class="math notranslate nohighlight" id="equation-eq-torsional-spring">
-<span class="eqno">(4.6)<a class="headerlink" href="#equation-eq-torsional-spring" title="Link to this equation"></a></span>\[k_{i} = \frac{1}{\sin^{2}\theta_{i}}\]</div>
+<span class="eqno">(4.4)<a class="headerlink" href="#equation-eq-torsional-spring" title="Link to this equation"></a></span>\[k_{i} = \frac{1}{\sin^{2}\theta_{i}}\]</div>
 <p>ここで <span class="math notranslate nohighlight">\(\theta_{i}\)</span> は <a class="reference internal" href="#fig-triangle"><span class="std std-numref">図 4.1</span></a> が示すように, 節点 <span class="math notranslate nohighlight">\(i\)</span> 周りの角度である.
 角度がゼロに近づくほどバネの剛性は上がり, 格子が潰れにくくなる.</p>
 <figure class="align-default" id="fig-triangle">
@@ -283,10 +217,10 @@ Farhatらのねじりバネ定数は以下のように定義される.</p>
 <p>Farhatらの論文では, このねじりバネによるねじりモーメントを力に線形変換し, 通常の線形バネに重ね合わせて
 使用している.</p>
 </section>
-<section id="id14">
-<h2><span class="section-number">4.5. </span>半ねじりバネの方法<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
-<p>Farhatらの方法は3次元問題における四面体要素にも拡張されている <a class="footnote-reference brackets" href="#id21" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> が, 定式化が煩雑となるため計算コストが増加する.
-これに対し, 村山ら <a class="footnote-reference brackets" href="#id22" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> は三辺それぞれの線形バネについて,その対角を 式 <a class="reference internal" href="#equation-eq-torsional-spring">(4.6)</a> で表されるバネ定数として加える定式化を提案した.
+<section id="id12">
+<h2><span class="section-number">4.4. </span>半ねじりバネの方法<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<p>Farhatらの方法は3次元問題における四面体要素にも拡張されている <a class="footnote-reference brackets" href="#id19" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> が, 定式化が煩雑となるため計算コストが増加する.
+これに対し, 村山ら <a class="footnote-reference brackets" href="#id20" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> は三辺それぞれの線形バネについて,その対角を 式 <a class="reference internal" href="#equation-eq-torsional-spring">(4.4)</a> で表されるバネ定数として加える定式化を提案した.
 すなわち, 2次元三角形格子においては, 辺 <span class="math notranslate nohighlight">\(l_{ij}\)</span> におけるばね定数を</p>
 <div class="math notranslate nohighlight">
 \[k_{ij} = \frac{1}{\left\|\boldsymbol{x}_{j}^{n} - \boldsymbol{x}_{i}^{n}\right\|} + \sum_{k} \frac{1}{\sin^{2}\theta_{k}}\]</div>
@@ -299,45 +233,45 @@ Farhatらのねじりバネ定数は以下のように定義される.</p>
 </figcaption>
 </figure>
 </section>
-<section id="id17">
-<h2><span class="section-number">4.6. </span>ソルバでの取り扱い<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
+<section id="id15">
+<h2><span class="section-number">4.5. </span>ソルバでの取り扱い<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
 <p>本ソルバでは, 村山らの半ねじりバネの方法を援用した segment spring model を採用している.
 ただし村山等の報告と異なり, Farhatらの2次元問題のねじりばね定数(すなわち,2辺角)も加えている. したがって, 辺 <span class="math notranslate nohighlight">\(l_{ij}\)</span> に対するばね定数は</p>
 <div class="math notranslate nohighlight">
 \[k_{ij} = \frac{1}{\left\|\boldsymbol{x}_{j}^{n} - \boldsymbol{x}_{i}^{n}\right\|} + \sum_{k} \frac{1}{\sin^{2}\theta_{k}^{edge}} + \sum_{k} \frac{1}{\sin^{2}\theta_{k}^{plane}}\]</div>
 <p>となる. また, 反復は変位ベクトルでは無く位置ベクトルに対して行う. 反復 <span class="math notranslate nohighlight">\(k\)</span> 回目の更新で得られた座標を
-<span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}^{k} = \boldsymbol{x}_{i}^{n} + \boldsymbol{q}_{i}^{k}\)</span> とおき, 式 <a class="reference internal" href="#equation-eq-segment-spring">(4.5)</a> に代入すると</p>
+<span class="math notranslate nohighlight">\(\boldsymbol{x}_{i}^{k} = \boldsymbol{x}_{i}^{n} + \boldsymbol{q}_{i}^{k}\)</span> とおき, 式 <a class="reference internal" href="#equation-eq-segment-spring">(4.3)</a> に代入すると</p>
 <div class="math notranslate nohighlight">
 \[\boldsymbol{x}_{i}^{k+1} = \boldsymbol{x}_{i}^{n} + \frac{\sum_{j \sim nb(i)}k_{ij}\left(\boldsymbol{x}_{i}^{k} - \boldsymbol{x}_{i}^{n}\right)}{\sum_{j \sim nb(i)}k_{ij}}\]</div>
 <p>と表される.</p>
-<section id="id18">
-<h3><span class="section-number">4.6.1. </span>クラス<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<section id="id16">
+<h3><span class="section-number">4.5.1. </span>クラス<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <p>バネ格子に関する処理は <code class="docutils literal notranslate"><span class="pre">SpringMesh_t</span></code> クラス(<code class="docutils literal notranslate"><span class="pre">SpringMesh.f90</span></code>)が受け持つ.</p>
 </section>
 </section>
 <section id="references">
-<h2><span class="section-number">4.7. </span>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.6. </span>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id19" role="note">
+<aside class="footnote brackets" id="id17" role="note">
 <span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id6">1</a>,<a role="doc-backlink" href="#id7">2</a>,<a role="doc-backlink" href="#id8">3</a>,<a role="doc-backlink" href="#id9">4</a>,<a role="doc-backlink" href="#id10">5</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id5">2</a>,<a role="doc-backlink" href="#id6">3</a>,<a role="doc-backlink" href="#id7">4</a>,<a role="doc-backlink" href="#id8">5</a>)</span>
 <p>F.J. Blom, Considerations on the spring analogy, International Journal for Numerical Methods in Fluids. 32 (2000) 647–668.</p>
 </aside>
-<aside class="footnote brackets" id="id20" role="note">
+<aside class="footnote brackets" id="id18" role="note">
 <span class="label"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id11">1</a>,<a role="doc-backlink" href="#id13">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id9">1</a>,<a role="doc-backlink" href="#id11">2</a>)</span>
 <ol class="upperalpha simple" start="3">
 <li><p>Farhat, C. Degand, B. Koobus, M. Lesoinne, Torsional springs for two-dimensional dynamic unstructured fluid meshes, Computer Methods in Applied Mechanics and Engineering. 163 (1998) 231–245.</p></li>
 </ol>
 </aside>
-<aside class="footnote brackets" id="id21" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">3</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id19" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">3</a><span class="fn-bracket">]</span></span>
 <ol class="upperalpha simple" start="3">
 <li><p>Degand, C. Farhat, A three-dimensional torsional spring analogy method for unstructured dynamic meshes, Computers &amp; Structures. 80 (2002) 305–316.</p></li>
 </ol>
 </aside>
-<aside class="footnote brackets" id="id22" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">4</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id20" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id14">4</a><span class="fn-bracket">]</span></span>
 <p>村山光宏, 非構造動的移動格子に関する研究, 航空宇宙技術研究所特別資料: 航空宇宙数値シミュレーション技術シンポジウム2001論文集 = Special Publication of National Aerospace Laboratory: Proceedings of Aerospace Numerical Simulation Symposium 2001. 53 (2002) 161–166.</p>
 </aside>
 </aside>
