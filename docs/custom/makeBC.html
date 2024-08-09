@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>3. 境界条件の作成例 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+  <title>4. 境界条件の作成例 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="4. ユーザーカスタマイズの方法" href="plugin_case.html" />
-    <link rel="prev" title="2. 格子の変形" href="moveMesh.html" /> 
+    <link rel="next" title="5. Intel MKL を利用する方法" href="use_intel_mkl.html" />
+    <link rel="prev" title="3. 格子の変形" href="moveMesh.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -68,17 +68,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
-<li class="toctree-l1"><a class="reference internal" href="moveMesh.html">2. 格子の変形</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 境界条件の作成例</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 放物線分布の流入条件</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">3.1.1. クラスの定義</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">3.1.2. クラスの呼び出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">1. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">2. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moveMesh.html">3. 格子の変形</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. 境界条件の作成例</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">4.1. 放物線分布の流入条件</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.1.1. クラスの定義</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.1.2. クラスの呼び出し</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">4. ユーザーカスタマイズの方法</a></li>
 <li class="toctree-l1"><a class="reference internal" href="use_intel_mkl.html">5. Intel MKL を利用する方法</a></li>
 </ul>
 
@@ -96,7 +96,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">3. </span>境界条件の作成例</li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>境界条件の作成例</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/hirotori/afdet_user_guide/blob/main/source/custom/makeBC.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -107,17 +107,17 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">3. </span>境界条件の作成例<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1><span class="section-number">4. </span>境界条件の作成例<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="../main/boundary_condition.html"><span class="doc">境界条件</span></a> で示したとおり, 境界条件は境界条件クラスで実装されている.
 これらのクラスを任意に拡張することで, ユーザ独自の境界条件を定義することが可能である.
 以下では, ユーザ定義の境界条件クラスの例を挙げ, 具体的な拡張の仕方を提示する.</p>
 <section id="id2">
-<h2><span class="section-number">3.1. </span>放物線分布の流入条件<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2><span class="section-number">4.1. </span>放物線分布の流入条件<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>パイプ内流れやチャネル内流れを計算する場合, 流入条件を一様流としてしまうと,
 速度分布が完全に発達するまでの距離(助走区間)だけ余分に計算領域が必要である.
 計算格子数を節約するため, 一様流入ではなく完全に発達した層流ポアズイユ流を与えることを考える.</p>
 <section id="id3">
-<h3><span class="section-number">3.1.1. </span>クラスの定義<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.1.1. </span>クラスの定義<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>流れ方向を <span class="math notranslate nohighlight">\(x\)</span> 軸, 残りを <span class="math notranslate nohighlight">\(y,z\)</span> 軸とする. 半径 <span class="math notranslate nohighlight">\(R\)</span> の円管を流れる層流を
 考えるとしよう. 無次元化のため代表速度を <span class="math notranslate nohighlight">\(U_{\infty}\)</span> , 長さを <span class="math notranslate nohighlight">\(L_{\infty}\)</span> と置くと,
 無次元速度分布は次式で表される.</p>
@@ -178,7 +178,7 @@
 </div>
 </section>
 <section id="id4">
-<h3><span class="section-number">3.1.2. </span>クラスの呼び出し<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.1.2. </span>クラスの呼び出し<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>作成したクラスを実際の計算で使用するため, ケースクラス <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> を拡張する必要がある.
 (ここでは <code class="docutils literal notranslate"><span class="pre">case_pois_t</span></code> としている)
 <a class="reference internal" href="plugin_case.html"><span class="doc">ユーザーカスタマイズの方法</span></a> で述べた <code class="docutils literal notranslate"><span class="pre">create_boundary_condition</span></code> を利用する.</p>
@@ -234,8 +234,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="moveMesh.html" class="btn btn-neutral float-left" title="2. 格子の変形" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="plugin_case.html" class="btn btn-neutral float-right" title="4. ユーザーカスタマイズの方法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="moveMesh.html" class="btn btn-neutral float-left" title="3. 格子の変形" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="use_intel_mkl.html" class="btn btn-neutral float-right" title="5. Intel MKL を利用する方法" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

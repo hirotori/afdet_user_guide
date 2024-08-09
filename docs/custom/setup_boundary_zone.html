@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1. 境界ゾーンのファイル指定 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+  <title>2. 境界ゾーンのファイル指定 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="2. 格子の変形" href="moveMesh.html" />
-    <link rel="prev" title="4. バネ格子" href="../libs/springmesh.html" /> 
+    <link rel="next" title="3. 格子の変形" href="moveMesh.html" />
+    <link rel="prev" title="1. ユーザーカスタマイズの方法" href="plugin_case.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -68,15 +68,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">1. 境界ゾーンのファイル指定</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#on-define-zone">1.1. ユーザ定義クラスの <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> から指定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">1.2. 表面メッシュから指定</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">1.3. ファイルの指定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">1. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 境界ゾーンのファイル指定</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#on-define-zone">2.1. ユーザ定義クラスの <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> から指定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">2.2. 表面メッシュから指定</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">2.3. ファイルの指定</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="moveMesh.html">2. 格子の変形</a></li>
-<li class="toctree-l1"><a class="reference internal" href="makeBC.html">3. 境界条件の作成例</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">4. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="moveMesh.html">3. 格子の変形</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makeBC.html">4. 境界条件の作成例</a></li>
 <li class="toctree-l1"><a class="reference internal" href="use_intel_mkl.html">5. Intel MKL を利用する方法</a></li>
 </ul>
 
@@ -94,7 +94,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">1. </span>境界ゾーンのファイル指定</li>
+      <li class="breadcrumb-item active"><span class="section-number">2. </span>境界ゾーンのファイル指定</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/hirotori/afdet_user_guide/blob/main/source/custom/setup_boundary_zone.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -105,7 +105,7 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">1. </span>境界ゾーンのファイル指定<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1><span class="section-number">2. </span>境界ゾーンのファイル指定<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p>境界ゾーンの指定方法は</p>
 <ol class="arabic simple">
 <li><p>ユーザ定義クラスの <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> から指定</p></li>
@@ -113,7 +113,7 @@
 </ol>
 <p>の2通りがある.</p>
 <section id="on-define-zone">
-<h2><span class="section-number">1.1. </span>ユーザ定義クラスの <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> から指定<a class="headerlink" href="#on-define-zone" title="Link to this heading"></a></h2>
+<h2><span class="section-number">2.1. </span>ユーザ定義クラスの <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> から指定<a class="headerlink" href="#on-define-zone" title="Link to this heading"></a></h2>
 <p>汎用ケースクラス <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> を継承し，メソッド <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> をオーバーライドして，メッシュ形状に合うように境界条件を指定する．
 仕様については <a class="reference internal" href="plugin_case.html#pre-process"><span class="std std-ref">前処理</span></a> の <code class="docutils literal notranslate"><span class="pre">on_define_zone</span></code> を参照．</p>
 <p>例えば，直方体の計算領域を用意して平行平板間流れを解こうとする場合を考える．流れ方向を <span class="math notranslate nohighlight">\(x\)</span> , 壁に垂直な方向を <span class="math notranslate nohighlight">\(z\)</span> とすると,</p>
@@ -155,7 +155,7 @@
 </div>
 </section>
 <section id="id2">
-<h2><span class="section-number">1.2. </span>表面メッシュから指定<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2><span class="section-number">2.2. </span>表面メッシュから指定<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>.objの仕様は例えば <a class="reference external" href="https://ja.wikipedia.org/wiki/Wavefront_.obj%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB">Wikipedia</a>
 などを参照して貰うとして, 本ソルバで用いる形式は以下の通りである.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ジオメトリの頂点</span>
@@ -186,7 +186,7 @@
 </div>
 </section>
 <section id="id3">
-<h2><span class="section-number">1.3. </span>ファイルの指定<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<h2><span class="section-number">2.3. </span>ファイルの指定<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">case_setting.txt</span></code> に指定する.</p>
 </section>
 </section>
@@ -195,8 +195,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../libs/springmesh.html" class="btn btn-neutral float-left" title="4. バネ格子" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="moveMesh.html" class="btn btn-neutral float-right" title="2. 格子の変形" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plugin_case.html" class="btn btn-neutral float-left" title="1. ユーザーカスタマイズの方法" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="moveMesh.html" class="btn btn-neutral float-right" title="3. 格子の変形" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

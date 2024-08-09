@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2. 格子の変形 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+  <title>3. 格子の変形 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
-    <link rel="next" title="3. 境界条件の作成例" href="makeBC.html" />
-    <link rel="prev" title="1. 境界ゾーンのファイル指定" href="setup_boundary_zone.html" /> 
+    <link rel="next" title="4. 境界条件の作成例" href="makeBC.html" />
+    <link rel="prev" title="2. 境界ゾーンのファイル指定" href="setup_boundary_zone.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -68,17 +68,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">ソルバのカスタマイズ:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">1. 境界ゾーンのファイル指定</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">2. 格子の変形</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id2">2.1. 強制変位の例題 (ピストン流)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3">2.1.1. 強制変位(1自由度)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">2.1.2. 関数の制約</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">1. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup_boundary_zone.html">2. 境界ゾーンのファイル指定</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. 格子の変形</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">3.1. 強制変位の例題 (ピストン流)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3.1.1. 強制変位(1自由度)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.1.2. 関数の制約</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="makeBC.html">3. 境界条件の作成例</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plugin_case.html">4. ユーザーカスタマイズの方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makeBC.html">4. 境界条件の作成例</a></li>
 <li class="toctree-l1"><a class="reference internal" href="use_intel_mkl.html">5. Intel MKL を利用する方法</a></li>
 </ul>
 
@@ -96,7 +96,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">2. </span>格子の変形</li>
+      <li class="breadcrumb-item active"><span class="section-number">3. </span>格子の変形</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/hirotori/afdet_user_guide/blob/main/source/custom/moveMesh.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -107,7 +107,7 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">2. </span>格子の変形<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1><span class="section-number">3. </span>格子の変形<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
 <p>空間格子の移動や変形は, 汎用ケースクラス <code class="docutils literal notranslate"><span class="pre">case_commom_t</span></code> を継承したカスタムケースクラスのメソッド <code class="docutils literal notranslate"><span class="pre">on_transform_grid</span></code> を呼び出し,
 格子の座標を更新する. <code class="docutils literal notranslate"><span class="pre">on_transform_grid</span></code> は以下のような引数仕様を持つ.</p>
 <div class="highlight-Fortran notranslate"><div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">on_transform_grid</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">fluid</span><span class="p">,</span><span class="w"> </span><span class="n">xyz</span><span class="p">)</span>
@@ -122,12 +122,12 @@
 <p>変更可能なのは <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> オブジェクトではなく, その中のメンバである格子の座標 <code class="docutils literal notranslate"><span class="pre">xyz</span></code> である.
 上のメソッドは, 座標配列 <code class="docutils literal notranslate"><span class="pre">xyz</span></code> を <code class="docutils literal notranslate"><span class="pre">grid</span></code> とは別の仮引数として与えることで, <code class="docutils literal notranslate"><span class="pre">grid_t</span></code> の他のメンバ変数を変更しないように配慮されている.</p>
 <section id="id2">
-<h2><span class="section-number">2.1. </span>強制変位の例題 (ピストン流)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<h2><span class="section-number">3.1. </span>強制変位の例題 (ピストン流)<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
 <p>例として, 円管ピストン流を格子変形を使って再現してみよう. 直径 <span class="math notranslate nohighlight">\(D\)</span>, 長さ <span class="math notranslate nohighlight">\(L\)</span> の円管を考える. 長手方向を <span class="math notranslate nohighlight">\(x\)</span> 軸とし,
 円管の中心が <span class="math notranslate nohighlight">\(x\)</span> 軸を通るように座標をとる. 円管の左端を速度 <span class="math notranslate nohighlight">\(V\)</span> で動かし, 右端を固定して, 円管を徐々に圧縮する.
 このときの円管内の流れを移動格子有限体積法により計算する.</p>
 <section id="id3">
-<h3><span class="section-number">2.1.1. </span>強制変位(1自由度)<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<h3><span class="section-number">3.1.1. </span>強制変位(1自由度)<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>ばピストン運動のような1自由度の移動(直線上の運動)の場合は,バネ格子をわざわざ利用せずとも,
 以下に述べる方法を用いれば十分に計算可能である.</p>
 <p>まず，ある節点(セルを構成するある格子点) <span class="math notranslate nohighlight">\(a\)</span> の時刻 <span class="math notranslate nohighlight">\(t\)</span> における座標を <span class="math notranslate nohighlight">\(x_{a}(t)\)</span> ,
@@ -135,7 +135,7 @@
 この格子移動法では，節点の初期座標からの移動量を，<strong>初期座標に依存して決定する</strong>.
 <span class="math notranslate nohighlight">\(x_{a}(t)-x_{a,0}\)</span> を以下のように定める．</p>
 <div class="math notranslate nohighlight" id="equation-eq-mesh-1d-move">
-<span class="eqno">(2.7)<a class="headerlink" href="#equation-eq-mesh-1d-move" title="Link to this equation"></a></span>\[x_{a}(t)-x_{a,0} = f(x_{a,0}, t)\]</div>
+<span class="eqno">(3.6)<a class="headerlink" href="#equation-eq-mesh-1d-move" title="Link to this equation"></a></span>\[x_{a}(t)-x_{a,0} = f(x_{a,0}, t)\]</div>
 <p>ここで <span class="math notranslate nohighlight">\(f(x_{a,0}, t)\)</span> は任意の関数であるが，多少の制約は存在する．それについては後ほど述べる．
 たいていは線形関数</p>
 <div class="math notranslate nohighlight">
@@ -182,7 +182,7 @@
 </div>
 </section>
 <section id="id4">
-<h3><span class="section-number">2.1.2. </span>関数の制約<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<h3><span class="section-number">3.1.2. </span>関数の制約<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
 <p>上記で述べた方法は節点だけに着目しているため，格子の形状については全く考慮していない．そのため，
 場合によってはある節点が隣り合う節点を追い越してしまい，結果として計算の破綻を引き起こすことがある．
 そこで，ここでは節点の位置関係を保つためにはどのような条件が必要になるのかについて考察する．
@@ -190,21 +190,21 @@
 <p>ある2つの点 <span class="math notranslate nohighlight">\(x_{a},x_{b}\)</span> を考える. ただし <span class="math notranslate nohighlight">\(x_{a}(0) &lt; x_{b}(0)\)</span> とする.
 節点の位置関係を保つためには,
 任意の時刻 <span class="math notranslate nohighlight">\(t\)</span> においてつねに <span class="math notranslate nohighlight">\(x_{a}(t) &lt; x_{b}(t)\)</span> を満たさなければならない.
-式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(2.7)</a> を用いて,両者の差をとると</p>
+式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(3.6)</a> を用いて,両者の差をとると</p>
 <div class="math notranslate nohighlight">
 \[x_{b}(t) - x_{a}(t) = (x_{b,0} - x_{a,0}) \left( 1 + \frac{f(x_{b,0},t) - f(x_{a,0},t)}{x_{b,0} - x_{a,0}}\right)\]</div>
 <p>となるので, 要求を満たすためには</p>
 <div class="math notranslate nohighlight" id="equation-eq-mesh-move-constraint">
-<span class="eqno">(2.8)<a class="headerlink" href="#equation-eq-mesh-move-constraint" title="Link to this equation"></a></span>\[\frac{f(x_{b,0},t) - f(x_{a,0},t)}{x_{b,0} - x_{a,0}} &gt; -1\]</div>
+<span class="eqno">(3.7)<a class="headerlink" href="#equation-eq-mesh-move-constraint" title="Link to this equation"></a></span>\[\frac{f(x_{b,0},t) - f(x_{a,0},t)}{x_{b,0} - x_{a,0}} &gt; -1\]</div>
 <p>でなければならない.</p>
 <p>もし2つの点として <span class="math notranslate nohighlight">\(x_{0}, x_{0} + \delta x_{0}\)</span> をとると, <span class="math notranslate nohighlight">\(f(x_{0} + \delta x_{0},t)=f(x_{0},t)+\delta f\)</span> とおいて,
-<a class="reference internal" href="#equation-eq-mesh-move-constraint">(2.8)</a> より</p>
+<a class="reference internal" href="#equation-eq-mesh-move-constraint">(3.7)</a> より</p>
 <div class="math notranslate nohighlight">
 \[\frac{\delta f}{\delta x_{0}} &gt; -1\]</div>
 <p>が成り立つ. <span class="math notranslate nohighlight">\(\delta x_{0} \rightarrow 0\)</span> の極限をとると,</p>
 <div class="math notranslate nohighlight">
 \[\frac{df}{dx} &gt; -1\]</div>
-<p>となる. 1自由度の運動を 式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(2.7)</a> で与える場合は,上の条件に留意する必要がある.</p>
+<p>となる. 1自由度の運動を 式 <a class="reference internal" href="#equation-eq-mesh-1d-move">(3.6)</a> で与える場合は,上の条件に留意する必要がある.</p>
 <p>1自由度の運動であれば, 上記の強制変位法で大抵は解決できる．しかし，運動が2次元や3次元的になると，この方法はうまくいかない可能性が高い．
 より複雑な運動に対応するために，バネ格子法を用いる．</p>
 </section>
@@ -215,8 +215,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="setup_boundary_zone.html" class="btn btn-neutral float-left" title="1. 境界ゾーンのファイル指定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="makeBC.html" class="btn btn-neutral float-right" title="3. 境界条件の作成例" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="setup_boundary_zone.html" class="btn btn-neutral float-left" title="2. 境界ゾーンのファイル指定" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="makeBC.html" class="btn btn-neutral float-right" title="4. 境界条件の作成例" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
