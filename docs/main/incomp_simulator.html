@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5. 非圧縮流体の計算 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
+  <title>5. 非圧縮性流体の計算 &mdash; afdet solver user guide 2.0.0beta ドキュメント</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/translations.js?v=4dbe4bdc"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="検索" href="../search.html" />
@@ -56,7 +57,11 @@
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">2. 幾何量の計算</a></li>
 <li class="toctree-l1"><a class="reference internal" href="boundary_condition.html">3. 境界条件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradient_scheme.html">4. 勾配スキーム</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">5. 非圧縮流体の計算</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. 非圧縮性流体の計算</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">5.1. 基礎方程式</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fractional-step">5.2. Fractional step法</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">その他のライブラリ:</span></p>
 <ul>
@@ -88,7 +93,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><span class="section-number">5. </span>非圧縮流体の計算</li>
+      <li class="breadcrumb-item active"><span class="section-number">5. </span>非圧縮性流体の計算</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/hirotori/afdet_user_guide/blob/main/source/main/incomp_simulator.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -99,7 +104,71 @@
            <div itemprop="articleBody">
              
   <section id="id1">
-<h1><span class="section-number">5. </span>非圧縮流体の計算<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<h1><span class="section-number">5. </span>非圧縮性流体の計算<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2><span class="section-number">5.1. </span>基礎方程式<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>非圧縮性流体の支配方程式は, 以下の連続の式 (質量保存則):</p>
+<div class="math notranslate nohighlight" id="equation-conti-eq">
+<span class="eqno">()<a class="headerlink" href="#equation-conti-eq" title="Link to this equation"></a></span>\[\nabla\cdot{\boldsymbol u} = 0\]</div>
+<p>と, 運動量保存則:</p>
+<div class="math notranslate nohighlight" id="equation-momentum-eq">
+<span class="eqno">()<a class="headerlink" href="#equation-momentum-eq" title="Link to this equation"></a></span>\[\frac{\partial \boldsymbol{u}}{\partial t}+\nabla\cdot\left(\boldsymbol{uu}\right) = -\frac{1}{\rho}\nabla p+ \nabla\cdot\left(\nu\nabla\boldsymbol{u}\right)\]</div>
+<p>の2つである. 圧力 <span class="math notranslate nohighlight">\(p\)</span> の時間発展項が無いため， 時間進行に工夫が必要となる．これまでに様々な時間進行法が提案されている．
+最も有名なのは MAC法 (とその系列), Fractional step法, そしてSIMPLE法 (とその系列) である.
+これらの解法について網羅的に説明することはここでは避ける. 詳細な解説は文献 <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id9" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id10" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> を参照いただきたい.</p>
+</section>
+<section id="fractional-step">
+<h2><span class="section-number">5.2. </span>Fractional step法<a class="headerlink" href="#fractional-step" title="Link to this heading"></a></h2>
+<p>本ソルバはFractional step法を用いて速度と圧力を時間発展させる. 以下, 簡単に概要を述べる.
+連続の式は発散オペレータを用いて</p>
+<div class="math notranslate nohighlight" id="equation-div-eq">
+<span class="eqno">()<a class="headerlink" href="#equation-div-eq" title="Link to this equation"></a></span>\[D(\boldsymbol{u}) = 0\]</div>
+<p>と表す. また, 運動量保存則は便宜上, 空間項をまとめて次のように書く.</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial \boldsymbol{u}}{\partial t} = f(\boldsymbol{u},p)\]</div>
+<p>なお, 右辺は</p>
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{u},p) = G(p) + D(\boldsymbol{uu}) + L(\boldsymbol{u})\]</div>
+<p>で, <span class="math notranslate nohighlight">\(G,D,L=DG\)</span> はそれぞれ勾配, 発散, ラプラシアンのオペレータである. 簡単のため, 時間に関して速度は1次前進差分とする. 圧力については陰的差分をとると</p>
+<div class="math notranslate nohighlight">
+\[\frac{\boldsymbol{u}^{n+1} - \boldsymbol{u}^{n}}{\Delta t} = f(\boldsymbol{u}^{n},p^{n+1})\]</div>
+<p>とかける．ここで <span class="math notranslate nohighlight">\(u^{n} = u(t^{n})=u(n\Delta t)\)</span> である. Fractional step法では, まず上式を2段に分離する.</p>
+<div class="math notranslate nohighlight" id="equation-dummy-velocity-eq">
+<span class="eqno">()<a class="headerlink" href="#equation-dummy-velocity-eq" title="Link to this equation"></a></span>\[\frac{\boldsymbol{u}^{\ast} - \boldsymbol{u}^{n}}{\Delta t} = f(\boldsymbol{u}^{n},0)\]</div>
+<div class="math notranslate nohighlight" id="equation-next-velocity">
+<span class="eqno">()<a class="headerlink" href="#equation-next-velocity" title="Link to this equation"></a></span>\[\frac{\boldsymbol{u}^{n+1} - \boldsymbol{u}^{\ast}}{\Delta t} = f(0,p^{n+1}) = G(p^{n+1})\]</div>
+<p>圧力を省いた <a class="reference internal" href="#equation-dummy-velocity-eq">()</a> から仮の速度を算出する. そして <a class="reference internal" href="#equation-next-velocity">()</a> を用いて, 仮速度と圧力から次の段階の速度を求める.
+圧力は <a class="reference internal" href="#equation-next-velocity">()</a> の速度 <span class="math notranslate nohighlight">\(\boldsymbol{u}^{n+1}\)</span> が連続の式を満たすように決める. 連続の式 <a class="reference internal" href="#equation-div-eq">()</a> に代入し整理すると,</p>
+<div class="math notranslate nohighlight">
+\[0 = D(\boldsymbol{u}^{\ast}) + \Delta t L(p^{n+1})\]</div>
+<p>を得る. これは圧力 <span class="math notranslate nohighlight">\(p^{n+1}\)</span> に関するPoisson方程式である. これを解いて <span class="math notranslate nohighlight">\(p^{n+1}\)</span> を求めたあと, <a class="reference internal" href="#equation-next-velocity">()</a> より
+新しい速度 <span class="math notranslate nohighlight">\(\boldsymbol{u}^{n+1}\)</span> を得る.</p>
+<p><strong>References</strong></p>
+<p>MAC法, SMAC法, Fractional step法の解説はこれが詳しい.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id7" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">1</a><span class="fn-bracket">]</span></span>
+<p>梶島岳夫, 乱流の数値シミュレーション 改訂版, 養賢堂, 2017</p>
+</aside>
+<aside class="footnote brackets" id="id8" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">2</a><span class="fn-bracket">]</span></span>
+<p>J.H. Ferziger, M. Perić, and R. L. Street. Computational methods for fluid dynamics. springer, 2019.</p>
+</aside>
+</aside>
+<p>以下2つはSIMPLE法の解説が詳しい.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id9" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="6">
+<li><p>Moukalled, L. Mangani and M. Darwish. The finite volume method, Springer International Publishing, 2016.</p></li>
+</ol>
+</aside>
+<aside class="footnote brackets" id="id10" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">4</a><span class="fn-bracket">]</span></span>
+<p>H.K. Versteeg, W. Malalaekera. 松下洋介, 斎藤泰洋, 青木秀之, 三浦隆利訳. 数値流体力学 第2版, 森北出版, 2011.</p>
+</aside>
+</aside>
+</section>
 </section>
 
 
