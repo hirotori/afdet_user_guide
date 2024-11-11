@@ -22,6 +22,11 @@
 3. 境界ゾーンの構築
 4. 各ゾーンに対する境界条件の作成と設定
 
+
+.. figure:: /images/custom_001.png
+
+    前処理段階の大まかな手順. 赤字がユーザが手をいれることのできる範囲. 
+
 **メインループ** は以下の手順が繰り返し行われる.
 
 1. 格子の変形
@@ -31,6 +36,10 @@
 5. 後処理
 6. データ書きだし
 7. バックアップデータの書き出し
+
+.. figure:: /images/custom_002.png
+
+    メインループの大まかな手順. 赤字がユーザが手をいれることのできる範囲.
 
 ``case_common_t`` クラスには, 上記それぞれの手順のための手続きが用意されている.
 ここに挙げていない細かな処理もあるが, それについては直接ソースファイルを参照して頂きたい.
@@ -91,22 +100,23 @@
     ``your_bc_t()`` はユーザが作った境界条件クラス (例として ``your_bc_t``) を値として返す関数(コンストラクタ).
     ``create_bc_default`` は予めライブラリとして用意されている関数.
 
-.. function:: on_restoring(this, unit, iostat, iomsg)
 
-    リスタート時に呼び出される. ``on_backupping`` で書き出したバックアップデータをリスタート時に読み取るための処理.
+メインループ
+--------------------------
 
-    .. warning:: 
+.. function:: on_pre_time_step(this, grid, fluid)
 
-        ``on_backupping`` で書き出したデータの順番通りに読み取る必要がある.
+    メインループ開始時 (時間ステップ進行前) の処理. 格子, 流体データの状態を変更することはできない. 
 
-    .. note:: 
 
-        配列データの読み取りはライブラリ ``Serialization`` モジュールの関数 ``ReadArray`` を使うと便利.
+.. function:: on_post_time_step(this, grid, fluid, step, time)
+
+    メインループ終了時 (時間ステップ進行後) の処理. 格子, 流体データの状態を変更することはできない. 
 
 .. function:: on_backupping(this, unit, iostat, iomsg)
 
     ユーザが独自に作成したケースクラスの変数をバックアップさせるための処理を書く.
-    引数で受け取った装置番号 ``unit`` に書き出す. 
+    引数で受け取った装置番号 ``unit`` に書き出す. 呼び出すタイミングは ``time_io_control.txt`` で設定する. 
     
     .. warning:: 
 
@@ -116,3 +126,36 @@
     .. note:: 
 
         配列データの書き出しはライブラリ ``Serialization`` モジュールの関数 ``WriteArray`` を使うと便利.
+
+    .. note::
+
+        オーバーライドして使用するときは, ``case_common_t`` のメンバ関数 ``case_common_backup`` を呼び出しておく. 
+
+
+.. function:: on_restoring(this, unit, iostat, iomsg)
+
+    リスタート時に呼び出される. ``on_backupping`` で書き出したバックアップデータをリスタート時に読み取るための処理.
+    呼び出すタイミングは ``time_io_control.txt`` で設定する. 
+    
+    .. warning:: 
+
+        ``on_backupping`` で書き出したデータの順番通りに読み取る必要がある.
+
+    .. note:: 
+
+        配列データの読み取りはライブラリ ``Serialization`` モジュールの関数 ``ReadArray`` を使うと便利.
+
+    .. note::
+
+        オーバーライドして使用するときは, ``case_common_t`` のメンバ関数 ``case_common_restore`` を呼び出しておく. 
+
+
+.. function:: on_write(this, grid, fluid, output_directory)
+
+    可視化データ書き出しの処理. ``common_case_t`` ではデフォルトで `.xmf` 形式で出力される. 
+
+
+.. function:: on_diverged(this, grid, fluid, output_directory)
+
+    発散時の処理. ``common_case_t`` ではデフォルトで発散時の流体データが `.xmf` 形式で出力される. 
+

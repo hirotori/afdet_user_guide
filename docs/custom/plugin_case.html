@@ -74,8 +74,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#on_define_zone"><code class="docutils literal notranslate"><span class="pre">on_define_zone()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#on_loaded"><code class="docutils literal notranslate"><span class="pre">on_loaded()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#create_boundary_condition"><code class="docutils literal notranslate"><span class="pre">create_boundary_condition()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#on_restoring"><code class="docutils literal notranslate"><span class="pre">on_restoring()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">1.2.2. メインループ</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#on_pre_time_step"><code class="docutils literal notranslate"><span class="pre">on_pre_time_step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_post_time_step"><code class="docutils literal notranslate"><span class="pre">on_post_time_step()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#on_backupping"><code class="docutils literal notranslate"><span class="pre">on_backupping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_restoring"><code class="docutils literal notranslate"><span class="pre">on_restoring()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_write"><code class="docutils literal notranslate"><span class="pre">on_write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on_diverged"><code class="docutils literal notranslate"><span class="pre">on_diverged()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -132,6 +139,12 @@
 <li><p>境界ゾーンの構築</p></li>
 <li><p>各ゾーンに対する境界条件の作成と設定</p></li>
 </ol>
+<figure class="align-default" id="id6">
+<img alt="../_images/custom_001.png" src="../_images/custom_001.png" />
+<figcaption>
+<p><span class="caption-text">前処理段階の大まかな手順. 赤字がユーザが手をいれることのできる範囲.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p><strong>メインループ</strong> は以下の手順が繰り返し行われる.</p>
 <ol class="arabic simple">
 <li><p>格子の変形</p></li>
@@ -142,6 +155,12 @@
 <li><p>データ書きだし</p></li>
 <li><p>バックアップデータの書き出し</p></li>
 </ol>
+<figure class="align-default" id="id7">
+<img alt="../_images/custom_002.png" src="../_images/custom_002.png" />
+<figcaption>
+<p><span class="caption-text">メインループの大まかな手順. 赤字がユーザが手をいれることのできる範囲.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p><code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> クラスには, 上記それぞれの手順のための手続きが用意されている.
 ここに挙げていない細かな処理もあるが, それについては直接ソースファイルを参照して頂きたい.</p>
 </section>
@@ -203,25 +222,26 @@
 <code class="docutils literal notranslate"><span class="pre">create_bc_default</span></code> は予めライブラリとして用意されている関数.</p>
 </dd></dl>
 
+</section>
+<section id="id5">
+<h3><span class="section-number">1.2.2. </span>メインループ<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="on_restoring">
-<span class="sig-name descname"><span class="pre">on_restoring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iostat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iomsg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_restoring" title="Link to this definition"></a></dt>
-<dd><p>リスタート時に呼び出される. <code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したバックアップデータをリスタート時に読み取るための処理.</p>
-<div class="admonition warning">
-<p class="admonition-title">警告</p>
-<p><code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したデータの順番通りに読み取る必要がある.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">注釈</p>
-<p>配列データの読み取りはライブラリ <code class="docutils literal notranslate"><span class="pre">Serialization</span></code> モジュールの関数 <code class="docutils literal notranslate"><span class="pre">ReadArray</span></code> を使うと便利.</p>
-</div>
+<dt class="sig sig-object py" id="on_pre_time_step">
+<span class="sig-name descname"><span class="pre">on_pre_time_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_pre_time_step" title="Link to this definition"></a></dt>
+<dd><p>メインループ開始時 (時間ステップ進行前) の処理. 格子, 流体データの状態を変更することはできない.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_post_time_step">
+<span class="sig-name descname"><span class="pre">on_post_time_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_post_time_step" title="Link to this definition"></a></dt>
+<dd><p>メインループ終了時 (時間ステップ進行後) の処理. 格子, 流体データの状態を変更することはできない.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="on_backupping">
 <span class="sig-name descname"><span class="pre">on_backupping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iostat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iomsg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_backupping" title="Link to this definition"></a></dt>
 <dd><p>ユーザが独自に作成したケースクラスの変数をバックアップさせるための処理を書く.
-引数で受け取った装置番号 <code class="docutils literal notranslate"><span class="pre">unit</span></code> に書き出す.</p>
+引数で受け取った装置番号 <code class="docutils literal notranslate"><span class="pre">unit</span></code> に書き出す. 呼び出すタイミングは <code class="docutils literal notranslate"><span class="pre">time_io_control.txt</span></code> で設定する.</p>
 <div class="admonition warning">
 <p class="admonition-title">警告</p>
 <p>配列を書き出す場合, その配列のサイズを配列本体よりも前に書かなければならない.
@@ -231,6 +251,41 @@
 <p class="admonition-title">注釈</p>
 <p>配列データの書き出しはライブラリ <code class="docutils literal notranslate"><span class="pre">Serialization</span></code> モジュールの関数 <code class="docutils literal notranslate"><span class="pre">WriteArray</span></code> を使うと便利.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>オーバーライドして使用するときは, <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> のメンバ関数 <code class="docutils literal notranslate"><span class="pre">case_common_backup</span></code> を呼び出しておく.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_restoring">
+<span class="sig-name descname"><span class="pre">on_restoring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iostat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iomsg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_restoring" title="Link to this definition"></a></dt>
+<dd><p>リスタート時に呼び出される. <code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したバックアップデータをリスタート時に読み取るための処理.
+呼び出すタイミングは <code class="docutils literal notranslate"><span class="pre">time_io_control.txt</span></code> で設定する.</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><code class="docutils literal notranslate"><span class="pre">on_backupping</span></code> で書き出したデータの順番通りに読み取る必要がある.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>配列データの読み取りはライブラリ <code class="docutils literal notranslate"><span class="pre">Serialization</span></code> モジュールの関数 <code class="docutils literal notranslate"><span class="pre">ReadArray</span></code> を使うと便利.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>オーバーライドして使用するときは, <code class="docutils literal notranslate"><span class="pre">case_common_t</span></code> のメンバ関数 <code class="docutils literal notranslate"><span class="pre">case_common_restore</span></code> を呼び出しておく.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_write">
+<span class="sig-name descname"><span class="pre">on_write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_write" title="Link to this definition"></a></dt>
+<dd><p>可視化データ書き出しの処理. <code class="docutils literal notranslate"><span class="pre">common_case_t</span></code> ではデフォルトで <cite>.xmf</cite> 形式で出力される.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="on_diverged">
+<span class="sig-name descname"><span class="pre">on_diverged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">this</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fluid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#on_diverged" title="Link to this definition"></a></dt>
+<dd><p>発散時の処理. <code class="docutils literal notranslate"><span class="pre">common_case_t</span></code> ではデフォルトで発散時の流体データが <cite>.xmf</cite> 形式で出力される.</p>
 </dd></dl>
 
 </section>
